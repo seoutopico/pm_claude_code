@@ -4,7 +4,8 @@
   "description": "Marketplace del plugin claude-pm: toolkit completo de gestión de proyectos para Claude Code.",
   "owner": {
     "name": "Aina-Lluna Taylor",
-    "email": "aina@ainalluna.com"
+    "email": "aina@ainalluna.com",
+    "url": "https://github.com/seoutopico"
   },
   "plugins": [
     {
@@ -15,6 +16,7 @@
         "email": "aina@ainalluna.com",
         "url": "https://ainalluna.com"
       },
+      "homepage": "https://github.com/seoutopico/pm_claude_code",
       "category": "productivity",
       "version": "0.2.0",
       "tags": ["project-management", "markdown", "obsidian", "inbox", "weekly-report"],

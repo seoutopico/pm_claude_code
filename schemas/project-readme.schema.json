@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/project-readme.schema.json",
+  "$id": "https://github.com/seoutopico/pm_claude_code/blob/main/schemas/project-readme.schema.json",
   "title": "pm project README frontmatter",
   "description": "Validación del frontmatter YAML del README.md de cada proyecto. El cuerpo del README (markdown libre) NO se valida — solo la cabecera.",
   "type": "object",

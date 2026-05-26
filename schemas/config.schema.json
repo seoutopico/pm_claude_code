@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/config.schema.json",
+  "$id": "https://github.com/seoutopico/pm_claude_code/blob/main/schemas/config.schema.json",
   "title": "pm config",
   "description": "Configuración del plugin claude-pm en el vault del usuario (.pm/config.json).",
   "type": "object",

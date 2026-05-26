@@ -38,31 +38,43 @@ Activa los módulos que necesites; ignora el resto.
 - **Scripts cross-platform** en Node.js puro (Windows / macOS / Linux)
 - **Schemas JSON validables** para `config.json` y `projects.json`
 
+## Instalación
+
+En cualquier sesión de Claude Code (v2.0+):
+
+```
+/plugin marketplace add seoutopico/pm_claude_code
+/plugin install pm@pm-marketplace
+```
+
+Verifica con `/plugin` (pestaña Installed).
+
 ## Quick start
 
-> Documentación completa: [`docs/ONBOARDING.md`](./docs/ONBOARDING.md) (en construcción).
-
-Mientras tanto, la opción más rápida para probarlo:
-
-```bash
-# Sesión de desarrollo apuntando directamente al plugin
-claude --plugin-dir "ruta/local/al/plugin"
-```
-
-Luego en la sesión de Claude Code:
+Ve a la carpeta donde quieras tu vault de proyectos (por ejemplo `~/mi-pm/`) y arranca Claude Code ahí:
 
 ```
-/pm:init           # responde al wizard
+/pm:init           # wizard interactivo
 /pm:nuevo-proyecto # crea tu primer proyecto
 # escribe notas en _inbox.md
 /pm:procesar       # distribúyelas
 /pm:reporte        # genera el reporte
 ```
 
-## Diseño técnico
+## Desarrollo local
 
-Ver [`../11_PLUGIN_DESIGN.md`](../11_PLUGIN_DESIGN.md) en el repo padre.
+Si quieres iterar sobre el plugin sin reinstalar:
+
+```bash
+claude --plugin-dir "ruta/local/al/clone"
+```
+
+## Requisitos
+
+- Claude Code v2.0 o superior
+- Node.js v16+ (para los scripts del wizard y sync)
+- En sync para Unix: `rsync` instalado
 
 ## Licencia
 
-MIT — ver [LICENSE](./LICENSE) (TBD).
+MIT — ver [LICENSE](./LICENSE).

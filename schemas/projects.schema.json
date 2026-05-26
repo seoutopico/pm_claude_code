@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/projects.schema.json",
+  "$id": "https://github.com/seoutopico/pm_claude_code/blob/main/schemas/projects.schema.json",
   "title": "pm projects registry",
   "description": "Registro de proyectos mantenido por view-syncer y nuevo-proyecto. Ubicación: paths.registry del config (por defecto _config/projects.json).",
   "type": "object",
