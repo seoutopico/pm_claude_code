@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/config.schema.json",
+  "title": "pm config",
+  "description": "Configuración del plugin claude-pm en el vault del usuario (.pm/config.json).",
+  "type": "object",
+  "required": ["version", "owner", "language", "paths", "features"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Versión del esquema. Sube cuando rompemos compatibilidad."
+    },
+    "owner": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      }
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "description": "Código ISO 639-1 (opcionalmente con región). Define el idioma de los outputs generados por los agentes."
+    },
+    "language_strict": {
+      "type": "boolean",
+      "default": true,
+      "description": "Si true, los agentes deben respetar acentos y diacríticos del idioma."
+    },
+    "paths": {
+      "type": "object",
+      "required": ["projects_root", "reports_root", "templates_root", "data_root", "inbox", "status", "registry"],
+      "additionalProperties": false,
+      "properties": {
+        "projects_root": { "type": "string", "minLength": 1 },
+        "reports_root": { "type": "string", "minLength": 1 },
+        "templates_root": { "type": "string", "minLength": 1 },
+        "config_root": { "type": "string", "default": "_config" },
+        "data_root": { "type": "string", "minLength": 1 },
+        "inbox": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "registry": { "type": "string", "minLength": 1 }
+      }
+    },
+    "taxonomies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_status": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Lista cerrada de estados permitidos para un proyecto."
+        },
+        "project_priority": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "project_states_active": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Subconjunto de project_status que se considera 'activo' (aparece en STATUS.md y en el reporte por defecto)."
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inbox_processing": { "type": "boolean", "default": true },
+        "project_scaffolding": { "type": "boolean", "default": true },
+        "view_sync": { "type": "boolean", "default": true },
+        "periodic_report": { "type": "boolean", "default": true },
+        "report_validation": { "type": "boolean", "default": false }
+      }
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cadence": {
+          "type": "string",
+          "enum": ["weekly", "monthly", "custom"]
+        },
+        "output_pattern": {
+          "type": "string",
+          "description": "Patrón con variables {reports_root}, {N}, {ISO_DATE}, {YYYY}, {MM}."
+        },
+        "history_file": { "type": "string" },
+        "rules_skill": {
+          "type": "string",
+          "description": "Nombre del skill que aporta las reglas de redacción (preload del report-writer)."
+        },
+        "history_track_field": {
+          "type": "string",
+          "default": "progreso",
+          "description": "Campo del README del proyecto que se trackea como serie temporal en history_file."
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_subagent_stop": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lista de matchers de subagentes cuyo Stop dispara validate-report.js."
+        },
+        "on_inbox_processed": {
+          "type": "string",
+          "enum": ["check_empty", "none"],
+          "default": "none"
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "extra_agents_dir": { "type": "string" },
+        "extra_skills_dir": { "type": "string" },
+        "extra_commands_dir": { "type": "string" }
+      },
+      "description": "Rutas donde el usuario coloca agentes/skills/commands propios sin tocar el plugin."
+    }
+  }
+}

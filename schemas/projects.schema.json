@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/projects.schema.json",
+  "title": "pm projects registry",
+  "description": "Registro de proyectos mantenido por view-syncer y nuevo-proyecto. Ubicación: paths.registry del config (por defecto _config/projects.json).",
+  "type": "object",
+  "required": ["version", "last_updated", "projects"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "const": 1 },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha ISO YYYY-MM-DD del último sync."
+    },
+    "projects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/project" },
+      "uniqueItemProperties": ["id"]
+    }
+  },
+  "$defs": {
+    "project": {
+      "type": "object",
+      "required": ["id", "name", "path", "status", "priority"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Slug kebab-case. Debe coincidir con el nombre de la carpeta bajo paths.projects_root."
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Ruta relativa al raíz del vault. Por convención: {paths.projects_root}/{id}/."
+        },
+        "status": { "type": "string", "minLength": 1 },
+        "priority": { "type": "string", "minLength": 1 },
+        "progreso": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "% de avance reportado en el último update. Tracker de la serie temporal en history_file."
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Términos que inbox-classifier usa para asignar notas a este proyecto."
+        },
+        "archived": { "type": "boolean", "default": false },
+        "created": { "type": "string", "format": "date" },
+        "last_updated": { "type": "string", "format": "date" },
+        "metadata": {
+          "type": "object",
+          "description": "Espacio libre para campos específicos del dominio del usuario (presupuesto, sponsor, proveedor, etc.). El plugin no los valida.",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

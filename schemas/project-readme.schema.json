@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ainalluna/claude-pm/blob/main/schemas/project-readme.schema.json",
+  "title": "pm project README frontmatter",
+  "description": "Validación del frontmatter YAML del README.md de cada proyecto. El cuerpo del README (markdown libre) NO se valida — solo la cabecera.",
+  "type": "object",
+  "required": ["id", "name", "status", "priority", "created"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "minLength": 1 },
+    "priority": { "type": "string", "minLength": 1 },
+    "progreso": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "owner": { "type": "string" },
+    "created": { "type": "string", "format": "date" },
+    "last_updated": { "type": "string", "format": "date" },
+    "archived": { "type": "boolean", "default": false }
+  }
+}
