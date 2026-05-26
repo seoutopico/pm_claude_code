@@ -40,6 +40,9 @@
       "properties": {
         "projects_root": { "type": "string", "minLength": 1 },
         "reports_root": { "type": "string", "minLength": 1 },
+        "communications_root": { "type": "string", "description": "Solo si features.communications=true." },
+        "processes_root": { "type": "string", "description": "Solo si features.processes=true." },
+        "meetings_root": { "type": "string", "description": "Solo si features.meetings=true." },
         "templates_root": { "type": "string", "minLength": 1 },
         "config_root": { "type": "string", "default": "_config" },
         "data_root": { "type": "string", "minLength": 1 },
@@ -70,6 +73,28 @@
           "items": { "type": "string" },
           "uniqueItems": true,
           "description": "Subconjunto de project_status que se considera 'activo' (aparece en STATUS.md y en el reporte por defecto)."
+        },
+        "communication_types": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Tipos permitidos en frontmatter de comunicaciones. Default: update, announcement, request, report, decision, other."
+        },
+        "communication_channels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "process_categories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Categorías permitidas en frontmatter de procesos. Default: finance, hr, legal, it, training, governance, communication, other."
+        },
+        "process_states": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
         }
       }
     },
@@ -81,7 +106,37 @@
         "project_scaffolding": { "type": "boolean", "default": true },
         "view_sync": { "type": "boolean", "default": true },
         "periodic_report": { "type": "boolean", "default": true },
-        "report_validation": { "type": "boolean", "default": false }
+        "report_validation": { "type": "boolean", "default": false },
+        "communications": { "type": "boolean", "default": false },
+        "processes": { "type": "boolean", "default": false },
+        "meetings": { "type": "boolean", "default": false },
+        "sync": { "type": "boolean", "default": false }
+      }
+    },
+    "sync": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "destination": {
+          "type": "string",
+          "description": "Path absoluto del destino o variable de entorno tipo ${env:VAR_NAME}."
+        },
+        "sources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Rutas relativas al vault que se sincronizan. Por defecto: el vault entero respetando exclude_dirs."
+        },
+        "exclude_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["*.log", "*.tmp", ".DS_Store", "Thumbs.db"]
+        },
+        "exclude_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["__pycache__", ".venv", "node_modules", ".git", ".pm", ".obsidian", ".vscode", ".trash"]
+        }
       }
     },
     "report": {

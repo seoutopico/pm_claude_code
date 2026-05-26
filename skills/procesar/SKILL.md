@@ -26,12 +26,13 @@ Espera el resultado. Parsea el JSON.
 
 ### Paso 2 — Distribuir en paralelo
 
-Para CADA entrada de `buckets.project_updates[]`, lanza UN subagente **`project-updater`** en paralelo. A cada uno pasa:
+Lanza en paralelo (sin esperar uno por uno; espera a que todos terminen antes del paso 3):
 
-- `project_id` y `project_path` (ambos vienen del classifier)
-- el array de `notas` que le corresponden
+- Para CADA entrada de `buckets.project_updates[]`: un subagente **`project-updater`** con `project_id`, `project_path` y `notas`.
+- Para CADA entrada de `buckets.communications[]` (si existe): un subagente **`communication-archiver`** con el `body`, `recipients_raw` y `subject_suggested`.
+- Para CADA entrada de `buckets.processes[]` (si existe): un subagente **`process-archiver`** con el `text`, `name_suggested` y `category_suggested`.
 
-Los subagentes son independientes; no esperes uno para lanzar el siguiente. Espera a que todos terminen antes del paso 3.
+Si el classifier devolvió `communications[]` pero `features.communications` es `false`, traslada esas entradas a `uncategorized` con prefijo `[comunicación no archivada]`. Mismo trato para `processes[]` si `features.processes` es `false`.
 
 ### Paso 3 — Sincronizar vistas
 
@@ -62,4 +63,4 @@ Muestra un resumen breve:
 - Si todas las notas quedan en `uncategorized`, no lances `project-updater` ni `view-syncer`. Solo muestra las notas al usuario.
 - NO modifiques la estructura de los READMEs (cabeceras, frontmatter); eso es responsabilidad de `project-updater`.
 - Idioma de los mensajes al usuario: según `config.language`. Si `language_strict: true`, respeta acentos.
-- Las extensions del usuario (subagentes propios en `.pm/agents/`) NO se invocan automáticamente desde esta skill. Si el usuario tiene un `comunicacion-archiver` propio o un `proceso-archiver` propio, debe crear su propia skill orquestadora copiando esta como referencia. El MVP solo orquesta los 3 subagentes core.
+- Si el usuario ha activado los módulos `communications` y/o `processes` en su config y el inbox contiene un bloque que claramente es un mail (cabecera tipo "Para:" o "Enviado a:") o un proceso ("el proceso para X es...", "los pasos son..."), invoca también los subagentes `communication-archiver` o `process-archiver` en paralelo con los `project-updater`. Si los módulos no están activos, esas notas van a `uncategorized`.

@@ -1,12 +1,12 @@
 ---
 name: reporte-periodico-rules
-description: Reglas de redacción del reporte periódico. Pensado para preload en el subagente report-writer. El usuario puede sobreescribir esta skill colocando una versión propia en .pm/skills/reporte-periodico-rules/SKILL.md con sus reglas específicas (audiencia, tono, secciones, palabras prohibidas, etc.).
+description: Reglas de redacción del reporte periódico. Preload del subagente report-writer. Reglas neutras pensadas para funcionar con cualquier organización; ajustables editando esta skill o sobrescribiéndola en .pm/skills/reporte-periodico-rules/SKILL.md.
 user-invocable: false
 ---
 
-# Reglas del reporte periódico (genéricas)
+# Reglas del reporte periódico
 
-Estas son las reglas **por defecto** del plugin `pm`. Son intencionalmente neutras y mínimas para servir a cualquier organización. **El usuario debe sobreescribir este skill** con sus reglas reales colocando un archivo en `.pm/skills/reporte-periodico-rules/SKILL.md` que herede o reemplace esta estructura.
+Reglas por defecto del plugin `pm`. Neutras y mínimas para servir a cualquier organización. Funcionan bien tal cual; si quieres reglas más opinionadas para tu audiencia concreta (directiva no técnica, equipo técnico, cliente externo, etc.), edita este archivo o coloca una versión propia en `.pm/skills/reporte-periodico-rules/SKILL.md` del vault.
 
 ## 5 reglas mínimas
 
@@ -36,13 +36,11 @@ Si la plantilla del usuario omite o reordena secciones, **respeta la plantilla**
 - Opiniones, valoraciones subjetivas, recomendaciones (a menos que el reglamento del usuario las pida explícitamente).
 - Emojis o iconos (a menos que el usuario los habilite explícitamente).
 
-## Cómo sobreescribir estas reglas
+## Personalización (opcional)
 
-Para que tu reporte tenga TUS reglas (audiencia concreta, tono específico, secciones obligatorias, palabras prohibidas, datos fijos como cabecera/firma, etc.):
+Si quieres reglas más específicas para tu audiencia (palabras prohibidas, datos fijos como cabecera/firma, longitud máxima, secciones obligatorias), tienes dos vías:
 
-1. Crea `.pm/skills/reporte-periodico-rules/SKILL.md` en tu vault.
-2. Mantén el frontmatter `name: reporte-periodico-rules` y `user-invocable: false` (importante, así no se invoca por accidente).
-3. Reemplaza el cuerpo con tus reglas. Puede ser tan extenso como quieras.
-4. El subagente `report-writer` lo cargará automáticamente porque está declarado en su `skills:` preload.
+1. **Editar este archivo directamente** (en `<plugin>/skills/reporte-periodico-rules/SKILL.md`). Tus cambios se pierden si reinstalas el plugin desde marketplace.
+2. **Colocar tu versión en el vault**: crea `.pm/skills/reporte-periodico-rules/SKILL.md` con tus reglas. El subagente `report-writer` la carga automáticamente y tiene preferencia sobre la del plugin. Sobrevive a actualizaciones.
 
-Ejemplo de override avanzado: ver `docs/EXTENDING.md` (caso "reporte con audiencia directiva no técnica").
+Mantén el frontmatter `name: reporte-periodico-rules` y `user-invocable: false` en cualquier caso.

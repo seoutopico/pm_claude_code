@@ -1,35 +1,68 @@
 # Claude PM (`pm`)
 
-> Project management on rails for [Claude Code](https://claude.com/claude-code). A lightweight, file-based replacement for Asana / Notion / Trello — orchestrated by AI, persisted as Markdown.
+> Toolkit completo de gestión de proyectos para [Claude Code](https://claude.com/claude-code). Sustituto ligero de Asana / Notion / Trello — orquestado por IA, persistido como Markdown en tu disco.
 
-**Status:** 🚧 Pre-release. MVP under construction.
+**Status:** 🚧 v0.2.0 pre-release. Funcional end-to-end pero pendiente de docs y publicación.
 
-## What it is
+## Qué hace
 
-`pm` is a Claude Code plugin that turns a folder on your disk into a personal project manager. You write free-form notes in `_inbox.md`, run `/pm:procesar`, and Claude distributes them into the right project README. Every Monday `/pm:reporte` generates a weekly summary.
+`pm` convierte una carpeta de tu disco en un sistema de gestión de proyectos completo. Escribes notas libres en `_inbox.md`, ejecutas `/pm:procesar`, y Claude distribuye cada nota al proyecto correcto. Cada semana `/pm:reporte` genera un resumen del estado.
 
-- **The filesystem is the database.** No backend, no SQLite, no cloud sync (unless you opt in).
-- **Markdown is the format.** Works great with Obsidian, VS Code, or any editor.
-- **You configure once, it adapts.** A single `.pm/config.json` controls language, folder structure, taxonomies, and which features are active.
+Activa los módulos que necesites; ignora el resto.
 
-## What it gives you (MVP)
+| Módulo | Comando | Qué hace |
+|---|---|---|
+| **Core (siempre activo)** | `/pm:init` | Inicializa el vault |
+| Core | `/pm:nuevo-proyecto` | Crea un proyecto con README, registry, STATUS |
+| Core | `/pm:procesar` | Procesa el inbox y distribuye notas a los proyectos |
+| Core | `/pm:sync-view` | Regenera STATUS.md desde los READMEs |
+| Core | `/pm:reporte` | Genera el reporte semanal o mensual |
+| **Comunicaciones** (opcional) | `/pm:comunicacion` | Archiva un mail/anuncio con metadatos |
+| **Procesos** (opcional) | `/pm:proceso` | Documenta un proceso interno con TBDs |
+| **Sync** (opcional) | `/pm:sync` | Espeja el vault a OneDrive/Dropbox/path externo |
 
-- `/pm:init` — interactive wizard to scaffold your workspace
-- `/pm:nuevo-proyecto` — create a new project
-- `/pm:procesar` — process your inbox into project READMEs
-- `/pm:reporte` — generate a weekly/monthly status report
-- `/pm:sync-view` — rebuild `STATUS.md` from current state
+## Filosofía
 
-Plus 4 subagents and 3 opt-in hooks under the hood.
+- **El filesystem es la base de datos.** Sin backend, sin SQLite, sin cloud obligatorio.
+- **Markdown es el formato.** Funciona con Obsidian, VS Code o cualquier editor.
+- **Configura una vez, adapta el resto.** Todo vive en `.pm/config.json` del vault. Cambia idioma, nombres de carpetas, taxonomías o activa/desactiva módulos editando un solo archivo.
+- **Out-of-the-box ready.** Instalas el plugin, ejecutas `/pm:init`, y ya tienes todo el sistema funcionando. No tienes que crear agentes ni skills tú mismo.
+
+## Componentes incluidos
+
+- **6 subagentes**: `inbox-classifier`, `project-updater`, `view-syncer`, `report-writer`, `communication-archiver`, `process-archiver`
+- **4 skills orquestadoras**: `procesar`, `nuevo-proyecto`, `reporte-periodico`, `reporte-periodico-rules`
+- **8 commands**: `/pm:init`, `/pm:procesar`, `/pm:nuevo-proyecto`, `/pm:reporte`, `/pm:sync-view`, `/pm:comunicacion`, `/pm:proceso`, `/pm:sync`
+- **3 hooks opcionales** (opt-in vía config): `check-readme-edit`, `validate-report`, `check-inbox-empty`
+- **5 plantillas**: proyecto, status, reporte, comunicación, proceso, reunión, decisión
+- **Scripts cross-platform** en Node.js puro (Windows / macOS / Linux)
+- **Schemas JSON validables** para `config.json` y `projects.json`
 
 ## Quick start
 
-> Coming with v0.1.0. For now, see [`docs/ONBOARDING.md`](./docs/ONBOARDING.md) (placeholder).
+> Documentación completa: [`docs/ONBOARDING.md`](./docs/ONBOARDING.md) (en construcción).
 
-## Design
+Mientras tanto, la opción más rápida para probarlo:
 
-See [`../11_PLUGIN_DESIGN.md`](../11_PLUGIN_DESIGN.md) in the parent repo for the full design document.
+```bash
+# Sesión de desarrollo apuntando directamente al plugin
+claude --plugin-dir "ruta/local/al/plugin"
+```
 
-## License
+Luego en la sesión de Claude Code:
 
-MIT — see [LICENSE](./LICENSE) (TBD).
+```
+/pm:init           # responde al wizard
+/pm:nuevo-proyecto # crea tu primer proyecto
+# escribe notas en _inbox.md
+/pm:procesar       # distribúyelas
+/pm:reporte        # genera el reporte
+```
+
+## Diseño técnico
+
+Ver [`../11_PLUGIN_DESIGN.md`](../11_PLUGIN_DESIGN.md) en el repo padre.
+
+## Licencia
+
+MIT — ver [LICENSE](./LICENSE) (TBD).

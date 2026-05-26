@@ -1,8 +1,8 @@
 {
   "name": "pm",
   "displayName": "Claude PM",
-  "version": "0.1.0",
-  "description": "Project management on rails sobre el filesystem, orquestado por Claude Code. Sustituto ligero de Asana/Notion/Trello basado en Markdown.",
+  "version": "0.2.0",
+  "description": "Toolkit completo de gestión de proyectos para Claude Code. Inbox + proyectos + reportes periódicos + comunicaciones + procesos + reuniones + sync. Todo en Markdown sobre tu filesystem. Sustituto ligero de Asana/Notion/Trello, listo para usar tras /pm:init.",
   "author": {
     "name": "Aina-Lluna Taylor",
     "email": "aina@ainalluna.com",

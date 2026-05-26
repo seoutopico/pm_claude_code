@@ -177,10 +177,13 @@ function todayISO() {
 
 const STRUCTURES = {
   numerada: {
-    label: 'Numerada (01_Proyectos, 02_Reportes) — orden visual; añade tus propias 03_*, 04_* libremente',
+    label: 'Numerada (01_Proyectos, 02_Reportes, ...) — orden visual; añade tus propias 06_*, 07_* libremente',
     paths: {
       projects_root: '01_Proyectos',
       reports_root: '02_Reportes',
+      communications_root: '03_Comunicaciones',
+      processes_root: '04_Procesos',
+      meetings_root: '05_Reuniones',
       templates_root: '_plantillas',
       config_root: '_config',
       data_root: '_data',
@@ -190,10 +193,13 @@ const STRUCTURES = {
     }
   },
   simple: {
-    label: 'Simple (projects, reports, templates) — convención mainstream',
+    label: 'Simple (projects, reports, ...) — convención mainstream',
     paths: {
       projects_root: 'projects',
       reports_root: 'reports',
+      communications_root: 'communications',
+      processes_root: 'processes',
+      meetings_root: 'meetings',
       templates_root: 'templates',
       config_root: '_config',
       data_root: '_data',
@@ -311,10 +317,48 @@ async function main() {
     project_states_active: activeStatesRaw.split(',').map((s) => s.trim()).filter(Boolean)
   };
 
-  // 6. Demo
+  // 6. Módulos opcionales
+  log('\n— Módulos opcionales —');
+  log('(El core "proyectos + reportes" está siempre activo. Activa los módulos que quieras usar.)');
+  const enableCommunications = await askYesNo(
+    'Activar módulo Comunicaciones (archivar mails/anuncios con metadatos)',
+    false,
+    'enable_communications'
+  );
+  const enableProcesses = await askYesNo(
+    'Activar módulo Procesos (documentar procesos internos con TBDs)',
+    false,
+    'enable_processes'
+  );
+  const enableMeetings = await askYesNo(
+    'Activar módulo Reuniones (plantilla de acta bajo cada proyecto)',
+    false,
+    'enable_meetings'
+  );
+  const enableSync = await askYesNo(
+    'Activar módulo Sync (espejar el vault a OneDrive / Dropbox / path externo)',
+    false,
+    'enable_sync'
+  );
+  let syncDestination = '';
+  if (enableSync) {
+    syncDestination = await ask(
+      'Destino del sync (ruta absoluta o ${env:VAR_NAME})',
+      '',
+      'sync_destination'
+    );
+  }
+
+  // 7. Demo
   const installDemo = DEMO_FLAG !== null
     ? DEMO_FLAG
     : await askYesNo('\n¿Instalar proyecto demo de ejemplo?', true, 'install_demo');
+
+  // Quitar paths de módulos no activados
+  const pathsFiltered = { ...paths };
+  if (!enableCommunications) delete pathsFiltered.communications_root;
+  if (!enableProcesses) delete pathsFiltered.processes_root;
+  if (!enableMeetings) delete pathsFiltered.meetings_root;
 
   // ---------- Construir config ----------
 
@@ -328,14 +372,18 @@ async function main() {
     },
     language,
     language_strict: true,
-    paths,
+    paths: pathsFiltered,
     taxonomies,
     features: {
       inbox_processing: true,
       project_scaffolding: true,
       view_sync: true,
       periodic_report: cadence !== 'none',
-      report_validation: false
+      report_validation: false,
+      communications: enableCommunications,
+      processes: enableProcesses,
+      meetings: enableMeetings,
+      sync: enableSync
     },
     ...(cadence !== 'none' ? {
       report: {
@@ -346,6 +394,14 @@ async function main() {
         history_file: `${paths.data_root}/historico_porcentajes.json`,
         rules_skill: 'reporte-periodico-rules',
         history_track_field: 'progreso'
+      }
+    } : {}),
+    ...(enableSync ? {
+      sync: {
+        enabled: true,
+        destination: syncDestination,
+        exclude_files: ['*.log', '*.tmp', '.DS_Store', 'Thumbs.db'],
+        exclude_dirs: ['__pycache__', '.venv', 'node_modules', '.git', '.pm', '.obsidian', '.vscode', '.trash']
       }
     } : {}),
     validation: {
@@ -367,14 +423,21 @@ async function main() {
   writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
   ok(`Creado ${path.relative(VAULT_ROOT, configPath)}`);
 
-  // Crear carpetas
-  for (const folder of [
+  // Crear carpetas (solo las del core + módulos activados)
+  const foldersToCreate = [
     paths.projects_root,
     paths.reports_root + (cadence === 'weekly' ? '/Semanales' : cadence === 'monthly' ? '/Mensuales' : ''),
     paths.templates_root,
     paths.config_root,
     paths.data_root
-  ]) {
+  ];
+  if (enableCommunications) foldersToCreate.push(paths.communications_root);
+  if (enableProcesses) foldersToCreate.push(paths.processes_root);
+  // Meetings root es OPCIONAL para actas globales; las actas por proyecto van en {projects_root}/{id}/reuniones/.
+  // Solo creamos meetings_root si se activa explícitamente (para reuniones transversales no atadas a un proyecto).
+  if (enableMeetings) foldersToCreate.push(paths.meetings_root);
+
+  for (const folder of foldersToCreate) {
     if (folder) {
       ensureDir(path.join(VAULT_ROOT, folder));
       ok(`Carpeta ${folder}/`);
