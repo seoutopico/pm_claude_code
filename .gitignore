@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# User vault scaffolded by /pm:init (never commit user data)
+.pm/
+
+# Logs
+*.log
+_data/*.log
+
+# Test artefacts
+tests/_tmp/
+tests/_fixtures-generated/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+build/
