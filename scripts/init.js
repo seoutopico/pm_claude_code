@@ -33,15 +33,55 @@ const SCHEMA_PATH = path.join(PLUGIN_ROOT, 'schemas', 'config.schema.json');
 
 // ---------- Args ----------
 
-const argv = new Set(process.argv.slice(2));
-const FORCE = argv.has('--force');
-const DEMO_FLAG = argv.has('--demo') ? true : argv.has('--no-demo') ? false : null;
+const args = process.argv.slice(2);
+const argSet = new Set(args);
+const FORCE = argSet.has('--force');
+const DEMO_FLAG = argSet.has('--demo') ? true : argSet.has('--no-demo') ? false : null;
+
+function getArgValue(name) {
+  const i = args.indexOf(name);
+  if (i >= 0 && i + 1 < args.length) return args[i + 1];
+  const prefix = `${name}=`;
+  for (const a of args) {
+    if (a.startsWith(prefix)) return a.slice(prefix.length);
+  }
+  return null;
+}
+
+const ANSWERS_FILE = getArgValue('--answers');
+const NON_INTERACTIVE = !!ANSWERS_FILE || argSet.has('--non-interactive');
 
 // ---------- Helpers I/O ----------
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+// Cargar respuestas pre-grabadas (modo no interactivo)
+let ANSWERS = null;
+if (ANSWERS_FILE) {
+  try {
+    ANSWERS = JSON.parse(fs.readFileSync(path.resolve(ANSWERS_FILE), 'utf8'));
+  } catch (e) {
+    console.error(`✗ No se pudo leer --answers ${ANSWERS_FILE}: ${e.message}`);
+    process.exit(1);
+  }
+}
 
-function ask(question, fallback) {
+const rl = NON_INTERACTIVE
+  ? null
+  : readline.createInterface({ input: process.stdin, output: process.stdout });
+
+function answerKey(question) {
+  // Convierte "Tu nombre" → "tu_nombre" para buscar en el JSON de respuestas.
+  return question.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
+function ask(question, fallback, keyOverride) {
+  const key = keyOverride || answerKey(question);
+  if (ANSWERS && Object.prototype.hasOwnProperty.call(ANSWERS, key)) {
+    const v = ANSWERS[key];
+    return Promise.resolve(v === undefined || v === null ? (fallback ?? '') : String(v));
+  }
+  if (NON_INTERACTIVE) {
+    return Promise.resolve(fallback ?? '');
+  }
   const hint = fallback !== undefined && fallback !== '' ? ` [${fallback}]` : '';
   return new Promise((resolve) => {
     rl.question(`${question}${hint}: `, (answer) => {
@@ -51,14 +91,31 @@ function ask(question, fallback) {
   });
 }
 
-async function askYesNo(question, defaultYes = true) {
+async function askYesNo(question, defaultYes = true, keyOverride) {
+  const key = keyOverride || answerKey(question);
+  if (ANSWERS && Object.prototype.hasOwnProperty.call(ANSWERS, key)) {
+    const v = ANSWERS[key];
+    if (typeof v === 'boolean') return v;
+    return String(v).toLowerCase().startsWith('y') || String(v).toLowerCase().startsWith('s');
+  }
+  if (NON_INTERACTIVE) return defaultYes;
   const hint = defaultYes ? 'Y/n' : 'y/N';
   const answer = (await ask(`${question} (${hint})`, '')).toLowerCase();
   if (answer === '') return defaultYes;
   return answer.startsWith('y') || answer.startsWith('s');
 }
 
-async function askChoice(question, choices, defaultIdx = 0) {
+async function askChoice(question, choices, defaultIdx = 0, keyOverride) {
+  const key = keyOverride || answerKey(question);
+  if (ANSWERS && Object.prototype.hasOwnProperty.call(ANSWERS, key)) {
+    const v = String(ANSWERS[key]).trim();
+    const byValue = choices.find((c) => c.value === v);
+    if (byValue) return byValue;
+    const idx = parseInt(v, 10) - 1;
+    if (Number.isInteger(idx) && idx >= 0 && idx < choices.length) return choices[idx];
+    return choices[defaultIdx];
+  }
+  if (NON_INTERACTIVE) return choices[defaultIdx];
   console.log(`\n${question}`);
   choices.forEach((c, i) => console.log(`  ${i + 1}) ${c.label}`));
   const raw = await ask(`Elige (1-${choices.length})`, String(defaultIdx + 1));
@@ -180,7 +237,7 @@ async function main() {
   if (exists(configPath) && !FORCE) {
     err(`Ya existe ${configPath}. Aborta para no sobreescribir.`);
     err('Si quieres reinicializar, ejecuta con --force.');
-    rl.close();
+    if (rl) rl.close();
     process.exit(1);
   }
   if (FORCE && exists(configPath)) {
@@ -189,18 +246,18 @@ async function main() {
 
   // 1. Owner
   log('— Datos del owner —');
-  const ownerName = await ask('Tu nombre', '');
+  const ownerName = await ask('Tu nombre', '', 'owner_name');
   if (!ownerName) {
     err('El nombre es obligatorio.');
-    rl.close();
+    if (rl) rl.close();
     process.exit(1);
   }
-  const ownerRole = await ask('Tu rol (opcional)', '');
-  const ownerEmail = await ask('Email (opcional)', '');
+  const ownerRole = await ask('Tu rol (opcional)', '', 'owner_role');
+  const ownerEmail = await ask('Email (opcional)', '', 'owner_email');
 
   // 2. Idioma
   log('\n— Idioma —');
-  const language = await ask('Código ISO (es/en/fr/de/pt/...)', 'es');
+  const language = await ask('Código ISO (es/en/fr/de/pt/...)', 'es', 'language');
 
   // 3. Estructura
   const structureChoice = await askChoice(
@@ -209,7 +266,8 @@ async function main() {
       { value: 'numerada', label: STRUCTURES.numerada.label },
       { value: 'simple', label: STRUCTURES.simple.label }
     ],
-    1 // default: simple
+    1,
+    'structure'
   );
   const paths = STRUCTURES[structureChoice.value].paths;
 
@@ -221,7 +279,8 @@ async function main() {
       { value: 'monthly', label: 'Mensual' },
       { value: 'none', label: 'Ninguno (no genera reportes)' }
     ],
-    0
+    0,
+    'cadence'
   );
   const cadence = cadenceChoice.value;
 
@@ -232,15 +291,18 @@ async function main() {
   const defaultTax = TAXONOMIES_BY_LANG[langKey];
   const statusRaw = await ask(
     'Estados de proyecto (separados por coma)',
-    defaultTax.project_status.join(',')
+    defaultTax.project_status.join(','),
+    'project_status'
   );
   const priorityRaw = await ask(
     'Prioridades (separadas por coma)',
-    defaultTax.project_priority.join(',')
+    defaultTax.project_priority.join(','),
+    'project_priority'
   );
   const activeStatesRaw = await ask(
     'Estados considerados "activos" (separados por coma)',
-    defaultTax.project_states_active.join(',')
+    defaultTax.project_states_active.join(','),
+    'project_states_active'
   );
 
   const taxonomies = {
@@ -252,7 +314,7 @@ async function main() {
   // 6. Demo
   const installDemo = DEMO_FLAG !== null
     ? DEMO_FLAG
-    : await askYesNo('\n¿Instalar proyecto demo de ejemplo?', true);
+    : await askYesNo('\n¿Instalar proyecto demo de ejemplo?', true, 'install_demo');
 
   // ---------- Construir config ----------
 
@@ -406,12 +468,12 @@ async function main() {
   log('Documentación: docs/ONBOARDING.md, docs/CUSTOMIZATION.md.');
   log('');
 
-  rl.close();
+  if (rl) rl.close();
 }
 
 main().catch((e) => {
   err(`Error: ${e.message}`);
   console.error(e.stack);
-  rl.close();
+  if (rl) rl.close();
   process.exit(1);
 });
