@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "pm-marketplace",
+  "description": "Marketplace del plugin claude-pm: toolkit completo de gestión de proyectos para Claude Code.",
+  "owner": {
+    "name": "Aina-Lluna Taylor",
+    "email": "aina@ainalluna.com"
+  },
+  "plugins": [
+    {
+      "name": "pm",
+      "description": "Toolkit completo de gestión de proyectos para Claude Code. Inbox + proyectos + reportes periódicos + comunicaciones + procesos + reuniones + sync. Sustituto ligero de Asana/Notion/Trello sobre Markdown.",
+      "author": {
+        "name": "Aina-Lluna Taylor",
+        "email": "aina@ainalluna.com",
+        "url": "https://ainalluna.com"
+      },
+      "category": "productivity",
+      "version": "0.2.0",
+      "tags": ["project-management", "markdown", "obsidian", "inbox", "weekly-report"],
+      "source": "./"
+    }
+  ]
+}
