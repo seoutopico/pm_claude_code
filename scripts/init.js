@@ -177,10 +177,10 @@ function todayISO() {
 
 const STRUCTURES = {
   numerada: {
-    label: 'Numerada (00_Proyectos, 05_Reportes, ...) — orden visual claro',
+    label: 'Numerada (01_Proyectos, 02_Reportes) — orden visual; añade tus propias 03_*, 04_* libremente',
     paths: {
-      projects_root: '00_Proyectos',
-      reports_root: '05_Reportes',
+      projects_root: '01_Proyectos',
+      reports_root: '02_Reportes',
       templates_root: '_plantillas',
       config_root: '_config',
       data_root: '_data',
@@ -190,7 +190,7 @@ const STRUCTURES = {
     }
   },
   simple: {
-    label: 'Simple (projects, reports, templates, ...) — convención mainstream',
+    label: 'Simple (projects, reports, templates) — convención mainstream',
     paths: {
       projects_root: 'projects',
       reports_root: 'reports',

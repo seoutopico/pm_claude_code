@@ -38,7 +38,7 @@ Devuelve un JSON estructurado:
     "project_updates": [
       {
         "project_id": "scouting",
-        "project_path": "00_Proyectos/scouting",
+        "project_path": "01_Proyectos/scouting",
         "notas": ["Reunión con Fhios: piden 70K. Próxima 24/03 12:00."]
       }
     ],
