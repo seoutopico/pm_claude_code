@@ -74,7 +74,7 @@ Si quieres que `pm` esté activo en TODAS tus sesiones de Claude Code:
 
 ## Quick start
 
-Ve a la carpeta donde quieras tu vault de proyectos (por ejemplo `~/mi-pm/`) y arranca Claude Code ahí:
+Dentro de la sesión del vault, ejecuta:
 
 ```
 /pm:init           # wizard interactivo
@@ -84,9 +84,26 @@ Ve a la carpeta donde quieras tu vault de proyectos (por ejemplo `~/mi-pm/`) y a
 /pm:reporte        # genera el reporte
 ```
 
-## Desarrollo local
+## Integración con Obsidian
 
-Si quieres iterar sobre el plugin sin reinstalar:
+El wizard `/pm:init` te pregunta si quieres configurar Obsidian en el vault. Si dices que sí:
+
+- Se crea `.obsidian/` con `showUnsupportedFiles: true` (Obsidian muestra TODOS los tipos de archivo, no solo `.md`).
+- Se instala el plugin de comunidad [`show-hidden-files`](https://github.com/polyipseity/obsidian-show-hidden-files) (incluido en este plugin con autorización de su licencia MIT), que hace visibles las carpetas que empiezan por `.` como `.pm/`, `.claude/`, `.obsidian/`.
+
+Resultado: puedes abrir el vault con Obsidian y desde el editor visual ver/editar:
+
+- Tus proyectos (README, reuniones, decisiones) en preview Markdown bonito.
+- Tu `.pm/config.json` (cambiar idioma, paths, taxonomías, módulos activos).
+- Tus overrides personales en `.pm/agents/`, `.pm/skills/`, `.pm/commands/` (si los tienes).
+- Los hooks de validación que actives en `.pm/validation/`.
+- Todo lo demás del vault.
+
+No es obligatorio usar Obsidian; el plugin funciona igual con VS Code o cualquier editor de texto. Pero la integración está hecha para que el flujo sea cómodo si Obsidian es tu editor principal.
+
+## Desarrollo local del plugin
+
+Si quieres iterar sobre el código del plugin (no usarlo, sino modificarlo):
 
 ```bash
 claude --plugin-dir "ruta/local/al/clone"
@@ -96,7 +113,18 @@ claude --plugin-dir "ruta/local/al/clone"
 
 - Claude Code v2.0 o superior
 - Node.js v16+ (para los scripts del wizard y sync)
-- En sync para Unix: `rsync` instalado
+- En Unix para el módulo Sync: `rsync` instalado
+- (Opcional) Obsidian si quieres usar la integración del editor visual
+
+## Autoría
+
+Plugin creado por **Aina-Lluna Taylor** (Head of GenAI, Editorial Planeta).
+
+- 🌐 Web: [ainalluna.com](https://ainalluna.com)
+- 📬 Newsletter: [ainalluna.substack.com](https://ainalluna.substack.com/)
+- 🐙 GitHub: [seoutopico](https://github.com/seoutopico)
+
+El plugin Obsidian incluido `show-hidden-files` es obra de [polyipseity](https://github.com/polyipseity), redistribuido bajo su licencia MIT.
 
 ## Licencia
 

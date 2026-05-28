@@ -53,6 +53,7 @@ El wizard te preguntará:
 | Módulo Procesos | `Sí` si vas a documentar procedimientos |
 | Módulo Reuniones | `Sí` si vas a tener actas |
 | Módulo Sync | `No` por ahora (lo puedes activar después) |
+| Configurar Obsidian | `Sí` si vas a abrir el vault con Obsidian (crea `.obsidian/` con `show-hidden-files` para ver/editar todo desde el editor visual) |
 | Proyecto demo | `Sí` (te ayuda a ver la estructura) |
 
 Tras el wizard tendrás en tu carpeta:

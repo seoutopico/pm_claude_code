@@ -18,7 +18,7 @@
       },
       "homepage": "https://github.com/seoutopico/pm_claude_code",
       "category": "productivity",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "tags": ["project-management", "markdown", "obsidian", "inbox", "weekly-report"],
       "source": "./"
     }

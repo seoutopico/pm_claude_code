@@ -349,7 +349,14 @@ async function main() {
     );
   }
 
-  // 7. Demo
+  // 7. Integración Obsidian
+  const enableObsidian = await askYesNo(
+    '\n¿Configurar Obsidian para abrir este vault (incluye plugin show-hidden-files para ver/editar todo)?',
+    true,
+    'enable_obsidian'
+  );
+
+  // 8. Demo
   const installDemo = DEMO_FLAG !== null
     ? DEMO_FLAG
     : await askYesNo('\n¿Instalar proyecto demo de ejemplo?', true, 'install_demo');
@@ -445,11 +452,28 @@ async function main() {
   }
 
   // Copiar plantillas al templates_root del usuario
+  // (solo archivos planos; la subcarpeta obsidian/ se trata aparte abajo)
   const templatesDst = path.join(VAULT_ROOT, paths.templates_root);
-  for (const fname of fs.readdirSync(TEMPLATES_SRC)) {
-    copyFile(path.join(TEMPLATES_SRC, fname), path.join(templatesDst, fname));
+  for (const entry of fs.readdirSync(TEMPLATES_SRC, { withFileTypes: true })) {
+    if (entry.isDirectory()) continue;
+    copyFile(path.join(TEMPLATES_SRC, entry.name), path.join(templatesDst, entry.name));
   }
   ok(`Plantillas copiadas a ${paths.templates_root}/`);
+
+  // Integración Obsidian
+  if (enableObsidian) {
+    const obsidianSrc = path.join(TEMPLATES_SRC, 'obsidian');
+    const obsidianDst = path.join(VAULT_ROOT, '.obsidian');
+    if (exists(obsidianSrc)) {
+      copyDir(obsidianSrc, obsidianDst);
+      // Limpiamos el README.md del template (es meta-documentación del template, no del vault)
+      const obsidianReadme = path.join(obsidianDst, 'README.md');
+      if (exists(obsidianReadme)) fs.unlinkSync(obsidianReadme);
+      ok(`Configuración Obsidian en .obsidian/ (plugin show-hidden-files incluido)`);
+    } else {
+      warn(`No se encontró la plantilla de Obsidian en ${obsidianSrc}. Salto la integración.`);
+    }
+  }
 
   // _inbox.md
   const inboxPath = path.join(VAULT_ROOT, paths.inbox);
