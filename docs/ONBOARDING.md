@@ -8,26 +8,29 @@ Esta guía te lleva desde cero hasta tu primer reporte semanal.
 - Node.js v16+ (`node --version` para verificar)
 - En macOS/Linux para el módulo Sync: `rsync` (preinstalado en macOS, `apt install rsync` en Linux)
 
-## 1. Instalar el plugin
+## 1. Crear tu vault
 
-En cualquier sesión de Claude Code:
-
-```
-/plugin marketplace add seoutopico/pm_claude_code
-/plugin install pm@pm-marketplace
-```
-
-Verifica con `/plugin` (pestaña Installed). Debes ver `pm` activo.
-
-## 2. Crear tu vault
-
-Un "vault" es la carpeta donde vas a guardar tus proyectos, reportes y notas. Crea una carpeta vacía y arranca Claude Code ahí:
+Un "vault" es la carpeta donde vas a guardar tus proyectos, reportes y notas. **Crea la carpeta primero y arranca Claude Code ahí** — así el plugin queda instalado solo en ese vault, no global:
 
 ```bash
 mkdir mi-pm
 cd mi-pm
 claude
 ```
+
+## 2. Instalar el plugin (solo en este vault)
+
+Dentro de la sesión que acabas de abrir:
+
+```
+/plugin marketplace add seoutopico/pm_claude_code
+/plugin install pm@pm-marketplace --scope project
+/reload-plugins
+```
+
+El flag **`--scope project`** es clave: crea `mi-pm/.claude/settings.json` con la declaración del plugin, y `pm` solo se activa cuando arrancas Claude Code en `mi-pm/` o subcarpetas. No contamina el resto de tus sesiones.
+
+Verifica con `/plugin` → pestaña Installed → debes ver `pm` activo.
 
 ## 3. Inicializar
 

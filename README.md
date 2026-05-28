@@ -40,14 +40,37 @@ Activa los módulos que necesites; ignora el resto.
 
 ## Instalación
 
-En cualquier sesión de Claude Code (v2.0+):
+> **Recomendado:** instala `pm` por proyecto, no globalmente. Así cada vault de proyectos solo carga el plugin cuando trabajas en él, sin contaminar el resto de tus sesiones de Claude Code.
+
+**1. Crea/entra a la carpeta donde quieres tu vault de proyectos:**
+
+```bash
+mkdir mi-vault
+cd mi-vault
+claude
+```
+
+**2. Dentro de la sesión, añade el marketplace e instala con scope project:**
 
 ```
 /plugin marketplace add seoutopico/pm_claude_code
+/plugin install pm@pm-marketplace --scope project
+/reload-plugins
+```
+
+Esto crea `mi-vault/.claude/settings.json` con la declaración del plugin. **Solo está activo cuando arrancas Claude Code en `mi-vault/` o subcarpetas.**
+
+Verifica con `/plugin` → pestaña Installed → debe aparecer `pm`. Empieza a teclear `/pm` y verás los 8 comandos.
+
+### Instalación global (no recomendada)
+
+Si quieres que `pm` esté activo en TODAS tus sesiones de Claude Code:
+
+```
 /plugin install pm@pm-marketplace
 ```
 
-Verifica con `/plugin` (pestaña Installed).
+(sin `--scope project`). Útil si lo usas en muchos vaults distintos. Recuerda hacer `/reload-plugins` después.
 
 ## Quick start
 
