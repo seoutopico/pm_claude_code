@@ -2,6 +2,8 @@
 
 > Sistema de gestión de proyectos en Claude Code. Markdown + memoria persistente + tu cerebro. Clónalo, lanza `/setup`, listo.
 
+Por **[Aina Lluna](https://ainalluna.com)** · Newsletter: [ainalluna.substack.com](https://ainalluna.substack.com/)
+
 Inspirado en el patrón **LLM Wiki** de [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): el LLM no redescubre el contexto en cada sesión, lo acumula en una memoria que crece contigo.
 
 ---
@@ -64,6 +66,14 @@ Más en [`docs/filosofia.md`](docs/filosofia.md).
 
 Lee [`docs/personalizar.md`](docs/personalizar.md). Cómo crear nuevos skills, nuevos agentes, nuevos comandos, hooks opcionales, integraciones con tu calendario o tu Drive.
 
+## Autora
+
+Hecho por **[Aina Lluna](https://ainalluna.com)**.
+
+Si te interesa la IA aplicada, la gestión de proyectos con LLMs y cómo construir sistemas personales sobre Claude Code, suscríbete a mi newsletter en **[ainalluna.substack.com](https://ainalluna.substack.com/)**.
+
+Si este repo te resulta útil, una estrella en GitHub o un comentario por el canal que prefieras se agradece.
+
 ## Licencia
 
-MIT.
+MIT. Ver [`LICENSE`](LICENSE).
