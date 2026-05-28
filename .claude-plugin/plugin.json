@@ -9,13 +9,8 @@
     "url": "https://ainalluna.com"
   },
   "homepage": "https://github.com/seoutopico/pm_claude_code",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/seoutopico/pm_claude_code.git"
-  },
-  "bugs": {
-    "url": "https://github.com/seoutopico/pm_claude_code/issues"
-  },
+  "repository": "https://github.com/seoutopico/pm_claude_code",
+  "bugs": "https://github.com/seoutopico/pm_claude_code/issues",
   "license": "MIT",
   "keywords": [
     "project-management",
