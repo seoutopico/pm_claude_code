@@ -24,11 +24,22 @@ Dentro de la sesión que acabas de abrir:
 
 ```
 /plugin marketplace add seoutopico/pm_claude_code
-/plugin install pm@pm-marketplace --scope project
-/reload-plugins
+/plugin install pm@pm-marketplace
 ```
 
-El flag **`--scope project`** es clave: crea `mi-pm/.claude/settings.json` con la declaración del plugin, y `pm` solo se activa cuando arrancas Claude Code en `mi-pm/` o subcarpetas. No contamina el resto de tus sesiones.
+Cuando te pregunte el scope, elige:
+
+```
+> Install for you, in this repo only (local scope)
+```
+
+Esto guarda el plugin en `mi-pm/.claude/settings.local.json`. Solo se activa cuando arrancas Claude Code en `mi-pm/` o subcarpetas, y solo para ti (nada se commitea al repo si versionas el vault con git).
+
+Después:
+
+```
+/reload-plugins
+```
 
 Verifica con `/plugin` → pestaña Installed → debes ver `pm` activo.
 

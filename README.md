@@ -40,7 +40,7 @@ Activa los módulos que necesites; ignora el resto.
 
 ## Instalación
 
-> **Recomendado:** instala `pm` por proyecto, no globalmente. Así cada vault de proyectos solo carga el plugin cuando trabajas en él, sin contaminar el resto de tus sesiones de Claude Code.
+> **Recomendado:** instala `pm` solo en el vault donde lo vayas a usar (local scope). Así cada vault tiene su propio setup, no contaminas el resto de tus sesiones, y nada se commitea al repo si pones el vault en git.
 
 **1. Crea/entra a la carpeta donde quieres tu vault de proyectos:**
 
@@ -50,27 +50,33 @@ cd mi-vault
 claude
 ```
 
-**2. Dentro de la sesión, añade el marketplace e instala con scope project:**
+**2. Dentro de la sesión, añade el marketplace e instala:**
 
 ```
 /plugin marketplace add seoutopico/pm_claude_code
-/plugin install pm@pm-marketplace --scope project
-/reload-plugins
-```
-
-Esto crea `mi-vault/.claude/settings.json` con la declaración del plugin. **Solo está activo cuando arrancas Claude Code en `mi-vault/` o subcarpetas.**
-
-Verifica con `/plugin` → pestaña Installed → debe aparecer `pm`. Empieza a teclear `/pm` y verás los 8 comandos.
-
-### Instalación global (no recomendada)
-
-Si quieres que `pm` esté activo en TODAS tus sesiones de Claude Code:
-
-```
 /plugin install pm@pm-marketplace
 ```
 
-(sin `--scope project`). Útil si lo usas en muchos vaults distintos. Recuerda hacer `/reload-plugins` después.
+Cuando te pregunte el scope, elige:
+
+```
+> Install for you, in this repo only (local scope)
+```
+
+Esto crea `mi-vault/.claude/settings.local.json` con la declaración del plugin. **Solo está activo cuando arrancas Claude Code en `mi-vault/` o subcarpetas, y solo para ti.** No se commitea si versionas el vault con git.
+
+Después:
+
+```
+/reload-plugins
+```
+
+Verifica con `/plugin` → pestaña Installed → debe aparecer `pm`. Empieza a teclear `/pm` y verás los 8 comandos.
+
+### Otros scopes (cuándo usarlos)
+
+- **Project scope** (`Install for all collaborators on this repository`) — usa esta si el vault está en git y varias personas trabajan sobre el mismo repo clonado. Se guarda en `.claude/settings.json` y se commitea.
+- **User scope** (`Install for you`) — usa esta si vas a tener `pm` activo en MUCHOS vaults distintos y no te molesta que cargue siempre. Se guarda en `~/.claude/` (global de tu usuario).
 
 ## Quick start
 
