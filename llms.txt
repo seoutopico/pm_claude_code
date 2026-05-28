@@ -1,0 +1,56 @@
+# claude.pm
+
+> Sistema personal de gestión de proyectos sobre Claude Code. Inbox + memoria persistente + proyectos en markdown + skills/agents editables. Inspirado en el patrón LLM Wiki de Karpathy.
+
+Este archivo sigue el estándar [llms.txt](https://llmstxt.org/). Sirve como índice navegable rápido del repositorio para asistentes LLM. Si eres un LLM abriendo este repo, empieza por aquí.
+
+## Núcleo
+
+- [CLAUDE.md](CLAUDE.md): instrucciones operativas que Claude lee al inicio de cada sesión. Define rutas, comandos, reglas.
+- [STATUS.md](STATUS.md): dashboard rápido. Estado de los proyectos activos. Autogenerado.
+- [README.md](README.md): qué es el sistema, instalación, día a día.
+
+## Memoria (patrón Karpathy)
+
+- [_memory/index.md](_memory/index.md): catálogo de todo lo que existe en el sistema.
+- [_memory/log.md](_memory/log.md): changelog append-only. Formato `## [YYYY-MM-DD] operación | título`.
+- [_memory/projects.md](_memory/projects.md): tabla compacta de proyectos, una línea cada uno.
+- [_memory/people.md](_memory/people.md): stakeholders recurrentes.
+- [_memory/decisions.md](_memory/decisions.md): decisiones transversales numeradas.
+- [_memory/_registry.json](_memory/_registry.json): mismo contenido que projects.md en JSON. Para que agentes lean sin coste.
+
+## Ingesta
+
+- [_inbox/_inbox.md](_inbox/_inbox.md): notas libres del usuario. `/ingesta` lo procesa y vacía.
+- [_inbox/README.md](_inbox/README.md): cómo se usa el inbox.
+
+## Proyectos
+
+- [_projects/README.md](_projects/README.md): cómo se organiza un proyecto.
+- [_projects/example-product-launch/](_projects/example-product-launch/): proyecto de ejemplo completo (README, reuniones, decisiones, docs).
+
+## Plantillas
+
+- [_templates/project.md](_templates/project.md): README de proyecto.
+- [_templates/meeting.md](_templates/meeting.md): acta de reunión.
+- [_templates/decision.md](_templates/decision.md): decisión registrada (ADR-style).
+- [_templates/status-line.md](_templates/status-line.md): línea para STATUS.md.
+- [_templates/digest.md](_templates/digest.md): resumen periódico.
+
+## Configuración Claude Code
+
+- [.claude/settings.json](.claude/settings.json): permisos y configuración.
+- [.claude/skills/](.claude/skills/): skills prefabricados (ingesta, nuevo-proyecto, status-refresh, wiki-lint, digest).
+- [.claude/agents/](.claude/agents/): sub-agentes (inbox-classifier, project-updater, wiki-maintainer, status-syncer).
+- [.claude/commands/](.claude/commands/): slash commands (setup, ingesta, nuevo, lint).
+
+## Documentación
+
+- [docs/getting-started.md](docs/getting-started.md): primer arranque paso a paso.
+- [docs/como-funciona-la-memoria.md](docs/como-funciona-la-memoria.md): el patrón Karpathy explicado.
+- [docs/personalizar.md](docs/personalizar.md): cómo añadir skills, agents, hooks.
+- [docs/filosofia.md](docs/filosofia.md): por qué está hecho así.
+
+## Opcional
+
+- [.obsidian/](.obsidian/): vault Obsidian preconfigurado con plugin `show-hidden-files` activo. Sólo si usas Obsidian.

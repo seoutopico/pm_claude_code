@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-28",
+  "schema_version": 1,
+  "projects": [
+    {
+      "id": "example-product-launch",
+      "path": "_projects/example-product-launch/",
+      "name": "Lanzamiento producto X",
+      "status": "En curso",
+      "next_milestone": "2026-06-12 — Beta cerrada",
+      "blockers": [
+        "Pendiente OK legal antes de la beta"
+      ],
+      "owner": "Aina",
+      "updated": "2026-05-22"
+    }
+  ]
+}

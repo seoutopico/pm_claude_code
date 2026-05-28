@@ -1,0 +1,32 @@
+# Configuración local y sensible de Claude Code
+.claude/settings.local.json
+.claude/*.log
+
+# Estado de sesión de Obsidian (irrelevante para otros clones)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+.trash/
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporales
+*.tmp
+*.log
+output.md
+
+# Secretos típicos (por si acaso)
+.env
+.env.*
+*.pem
+*.key
+credentials.json
