@@ -81,6 +81,37 @@ if [ -f _cola/trabajo.json ]; then
   fi
 fi
 
+# 6) Arnes enganchado al runtime (modo estricto): se HACE CUMPLIR, no se confia en la memoria
+#    del modelo. Estas tres reglas no pueden regresar en silencio.
+# 6a) Hook SessionStart registrado
+if grep -q '"SessionStart"' .claude/settings.json 2>/dev/null; then
+  ok "hook SessionStart registrado (arranque del arnes)"
+else
+  fail "falta el hook SessionStart en .claude/settings.json: el arnes NO se ejecutaria al arrancar (sin check ni protocolo)"
+fi
+# 6b) CLAUDE.md importa @AGENTS.md
+if grep -Eq '^@AGENTS\.md([[:space:]]|$)' CLAUDE.md 2>/dev/null; then
+  ok "CLAUDE.md importa @AGENTS.md (protocolo en contexto)"
+else
+  fail "CLAUDE.md no importa @AGENTS.md: el protocolo del arnes no entraria en contexto"
+fi
+# 6c) Skills y comandos de dominio blindados (disable-model-invocation)
+abiertos=""
+for sk in .claude/skills/*/SKILL.md; do
+  [ -f "$sk" ] || continue
+  grep -q 'disable-model-invocation:[[:space:]]*true' "$sk" || abiertos="$abiertos $sk"
+done
+for c in nuevo ingesta digest status-refresh lint setup; do
+  cf=".claude/commands/$c.md"
+  [ -f "$cf" ] || continue
+  grep -q 'disable-model-invocation:[[:space:]]*true' "$cf" || abiertos="$abiertos $cf"
+done
+if [ -z "$abiertos" ]; then
+  ok "skills/comandos de dominio blindados (no auto-invocables)"
+else
+  fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'):$abiertos"
+fi
+
 echo "==============================="
 if [ "$errores" -eq 0 ]; then
   mkdir -p _progress

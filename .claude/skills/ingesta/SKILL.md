@@ -1,6 +1,7 @@
 ---
 name: ingesta
 description: Procesa notas sueltas del inbox y las distribuye al proyecto, memoria o decisiones que correspondan. Trigger con "ingesta", "procesa el inbox", "vacía el inbox", "/ingesta".
+disable-model-invocation: true
 ---
 
 # Skill: Ingesta

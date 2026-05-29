@@ -1,9 +1,16 @@
+@AGENTS.md
+
 # CLAUDE.md — Sistema de gestión de proyectos personal
 
-> **Rama `v2` (arnés):** este repo corre bajo un arnés. **Lee `AGENTS.md` ANTES de operar** —
-> define el protocolo de sesión, el gate de salud (`bin/check`) y el contrato Default-FAIL.
-> Este `CLAUDE.md` mantiene las **reglas de dominio** (proyectos, inbox, memoria); el `AGENTS.md`
-> añade la capa de arnés. Ambos están vigentes.
+> **Rama `v2` (arnés ESTRICTO):** el protocolo del arnés vive en `AGENTS.md`, **importado arriba
+> con `@AGENTS.md`** para que entre en contexto en CADA sesión (Claude Code carga `CLAUDE.md`, no
+> `AGENTS.md`; el import cierra ese hueco). Además, el hook **`SessionStart`** ejecuta `bin/check`
+> e inyecta el protocolo al arrancar, así que el arnés ya no depende de que "te acuerdes de leer".
+> Este `CLAUDE.md` mantiene las **reglas de dominio** (proyectos, inbox, memoria); ambos vigentes.
+>
+> **Modo estricto:** las skills y comandos de dominio NO se auto-invocan (`disable-model-invocation`).
+> Son *playbooks* que el `lider`/workers leen y ejecutan. Todo trabajo pasa por el arnés
+> (cola → líder → workers → revisor → Default-FAIL), no por atajos.
 
 Lee esto al inicio de cada sesión. Es la guía operativa del sistema.
 
@@ -31,10 +38,16 @@ Eres el copiloto de gestión de proyectos del usuario. Tu trabajo: mantener viva
 
 ## Comandos disponibles
 
-- `/setup` — wizard inicial. Sólo la primera vez.
-- `/ingesta` — procesa `_inbox/_inbox.md` y distribuye.
-- `/nuevo <id-proyecto>` — crea un proyecto desde plantilla.
-- `/lint` — salud del sistema (contradicciones, huérfanos, gaps).
+En **modo estricto** estos comandos NO se auto-invocan: son *playbooks* manuales del operador y/o
+procedimientos que el `lider` lee y ejecuta. El camino normal de trabajo es **`/procesar`** (líder).
+
+- `/procesar` — **entrada del arnés**: el líder coge la siguiente unidad de la cola y la procesa
+  (orquesta workers → revisor → cierra con Default-FAIL). Es el comando que se auto-invoca.
+- `/extender` — cambios en el PROPIO sistema (tipos, plantillas, skills, agentes, hooks, config),
+  vía el `arquitecto`. También se auto-invoca.
+- `/setup` — wizard inicial. Sólo la primera vez (manual).
+- `/ingesta`, `/nuevo <id>`, `/lint`, `/digest`, `/status-refresh` — playbooks de dominio. Manuales
+  (`/nombre`) o leídos por el líder/workers; ya no se disparan solos.
 
 ## Reglas operativas
 

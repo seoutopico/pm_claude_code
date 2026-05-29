@@ -1,6 +1,7 @@
 ---
 name: digest
 description: Genera un resumen periódico (semanal, mensual o ad-hoc) de avances, decisiones, bloqueos y próximos hitos. Trigger con "digest", "resumen semanal", "resumen del mes", "/digest".
+disable-model-invocation: true
 ---
 
 # Skill: Digest

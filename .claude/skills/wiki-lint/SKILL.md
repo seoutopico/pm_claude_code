@@ -1,6 +1,7 @@
 ---
 name: wiki-lint
 description: Health check del sistema. Detecta contradicciones entre memoria y proyectos, páginas huérfanas, gaps de información, referencias rotas. Trigger con "lint", "salud del sistema", "/lint".
+disable-model-invocation: true
 ---
 
 # Skill: Wiki lint

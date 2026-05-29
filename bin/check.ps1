@@ -60,6 +60,39 @@ if (Test-Path '_cola/trabajo.json') {
   }
 }
 
+# 6) Arnes enganchado al runtime (modo estricto): el sistema lo HACE CUMPLIR, no se confia en
+#    que el modelo se acuerde de leer AGENTS.md. Estas tres reglas no pueden regresar en silencio.
+# 6a) Hook SessionStart registrado (ejecuta el check + inyecta el protocolo al arrancar)
+try {
+  $settings = Get-Content '.claude/settings.json' -Raw | ConvertFrom-Json
+  if ($settings.hooks.SessionStart) { OK "hook SessionStart registrado (arranque del arnes)" }
+  else { Fail "falta el hook SessionStart en .claude/settings.json: el arnes NO se ejecutaria al arrancar (sin check ni protocolo). Sin el, vuelve el cortocircuito." }
+} catch { Fail "no se pudo leer .claude/settings.json para verificar SessionStart" }
+
+# 6b) CLAUDE.md importa @AGENTS.md (Claude Code carga CLAUDE.md, no AGENTS.md; el import mete el protocolo en contexto)
+if (Test-Path 'CLAUDE.md') {
+  if ((Get-Content 'CLAUDE.md' -Raw) -match '(?m)^@AGENTS\.md\b') { OK "CLAUDE.md importa @AGENTS.md (protocolo en contexto)" }
+  else { Fail "CLAUDE.md no importa @AGENTS.md: el protocolo del arnes no entraria en contexto en cada sesion" }
+}
+
+# 6c) Skills y comandos de DOMINIO blindados (disable-model-invocation): el modelo no puede
+#     cortocircuitar el arnes auto-invocandolos. Son playbooks que el lider/workers LEEN.
+$dominio = @()
+Get-ChildItem '.claude/skills' -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+  $sk = Join-Path $_.FullName 'SKILL.md'
+  if (Test-Path $sk) { $dominio += $sk }
+}
+foreach ($c in @('nuevo','ingesta','digest','status-refresh','lint','setup')) {
+  $cf = ".claude/commands/$c.md"
+  if (Test-Path $cf) { $dominio += $cf }
+}
+$abiertos = @()
+foreach ($f in $dominio) {
+  if ((Get-Content $f -Raw) -notmatch 'disable-model-invocation:\s*true') { $abiertos += $f }
+}
+if ($abiertos.Count -eq 0) { OK "skills/comandos de dominio blindados (no auto-invocables)" }
+else { Fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'): $($abiertos -join ', ')" }
+
 Write-Host "==============================="
 if ($script:errores -eq 0) {
   New-Item -ItemType Directory -Force _progress | Out-Null

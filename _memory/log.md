@@ -25,3 +25,9 @@
 ## [2026-05-28] status-refresh | 1 proyecto sincronizado
 - STATUS.md y _registry.json regenerados.
 - Detectado bloqueo activo en `example-product-launch`.
+
+## [2026-05-29] note | arnés enganchado al runtime (modo estricto)
+- Diagnóstico: el arnés no se activaba en uso real; al pedir trabajo en lenguaje natural, Claude Code disparaba la skill de dominio directamente y se saltaba cola/líder/revisor/Default-FAIL.
+- Causa: AGENTS.md no se autocarga, no había hook SessionStart, y las skills/comandos se auto-invocaban.
+- Arreglo (Fase 5, vía arquitecto): hook `SessionStart` (check + protocolo) + `@AGENTS.md` en CLAUDE.md + `disable-model-invocation: true` en las 5 skills y 6 comandos de dominio (pasan a playbooks). `bin/check` (.ps1/.sh) ampliado con la sección 6 que verifica los 3 enganches; probado que dispara ante violación y pasa al cumplirse.
+- Decisión del operador: modo ESTRICTO (todo pasa por el arnés). Ver DESIGN.md §11-bis y AGENTS.md "Modo ESTRICTO".

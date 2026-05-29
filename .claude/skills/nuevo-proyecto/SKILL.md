@@ -1,6 +1,7 @@
 ---
 name: nuevo-proyecto
 description: Crea un proyecto nuevo desde plantilla con su estructura completa (README, carpetas de reuniones, decisiones, docs) y lo registra en memoria. Trigger con "nuevo proyecto", "crear proyecto", "/nuevo".
+disable-model-invocation: true
 ---
 
 # Skill: Nuevo proyecto

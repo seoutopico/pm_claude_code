@@ -1,5 +1,6 @@
 ---
 description: Health check del sistema. Detecta contradicciones, huérfanos, gaps y referencias rotas.
+disable-model-invocation: true
 ---
 
 # /lint

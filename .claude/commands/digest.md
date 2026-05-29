@@ -1,6 +1,7 @@
 ---
 description: Genera un resumen periódico (semanal por defecto) de avances, decisiones, bloqueos y próximos hitos.
 argument-hint: [semana|mes|YYYY-MM-DD..YYYY-MM-DD]
+disable-model-invocation: true
 ---
 
 # /digest

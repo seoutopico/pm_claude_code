@@ -1,6 +1,7 @@
 ---
 description: Crea un nuevo proyecto con estructura completa y lo registra en memoria.
 argument-hint: <id-del-proyecto>
+disable-model-invocation: true
 ---
 
 # /nuevo

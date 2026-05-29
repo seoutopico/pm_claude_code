@@ -12,8 +12,12 @@ es el cerebro intercambiable; este arnés se queda.
 
 ## Protocolo de sesión (síguelo SIEMPRE)
 
+> **Arranque automático:** el hook **`SessionStart`** (`.claude/hooks/session-start.*`) ya ejecuta
+> el paso 1 (`bin/check`) e inyecta este protocolo en cada sesión (`startup|resume|clear|compact`).
+> No dependes de acordarte de leer este fichero: el arnés se engancha solo al arrancar.
+
 ```
-1. Ejecuta el check de salud:
+1. (Automático vía SessionStart) Check de salud. Si quieres relanzarlo a mano:
      Windows:     powershell -NoProfile -File bin/check.ps1
      mac/linux:   bash bin/check.sh
    → Si sale con error (exit 1), PARA y reporta. No se trabaja sobre un sistema roto.
@@ -46,6 +50,42 @@ Una unidad de `_cola/trabajo.json` se puede cerrar **solo si**:
 El hook **`.claude/hooks/verify-gate`** intercepta cualquier intento de escribir `"done": true`
 en `_cola/trabajo.json`: si `check` no pasa, **bloquea la escritura**. La regla deja de
 depender de tu memoria y pasa a ser un invariante que el sistema hace cumplir.
+
+---
+
+## ⚙️ Modo ESTRICTO: el arnés se hace cumplir (no es opcional)
+
+> Este es el corazón del arreglo de mayo de 2026. El problema que resolvía: el arnés estaba
+> **bien diseñado pero solo enganchado a medias**, así que al pedir trabajo en lenguaje natural
+> ("crea proyectos", "procesa esto") Claude Code disparaba la skill de dominio directamente y
+> se saltaba la orquestación y la verificación — perdiendo la esencia del arnés.
+
+Tres enganches deterministas lo impiden ahora (los tres los verifica `bin/check`, sección 6):
+
+1. **El protocolo entra en contexto siempre.** `CLAUDE.md` importa `@AGENTS.md` y el hook
+   `SessionStart` inyecta el protocolo al arrancar. *(Claude Code carga `CLAUDE.md`, no `AGENTS.md`;
+   y aun cargado, una instrucción en markdown es contexto, no configuración forzada — por eso hace
+   falta también el hook.)*
+2. **Las skills/comandos de dominio NO se auto-invocan** (`disable-model-invocation: true`). El
+   modelo ya no puede coger el atajo. Pasan a ser **playbooks** (ver tabla abajo).
+3. **El cierre está blindado** por el `verify-gate` (Default-FAIL) más arriba.
+
+**Regla de oro:** *para hacer trabajo del usuario, NO ejecutes una skill de dominio.* Conviértelo
+en unidad(es) de la cola y procésalo como **líder** (orquesta workers → revisor → cierra). El
+único atajo legítimo es el del operador (Aina) tecleando `/nombre` a mano.
+
+### Playbooks (skills/comandos de dominio que LEES y ejecutas, no auto-invocas)
+
+| Playbook | Para qué | Quién lo ejecuta |
+|---|---|---|
+| `.claude/skills/nuevo-proyecto/SKILL.md` | Crear un proyecto desde plantilla | líder/worker (lo lee y aplica) |
+| `.claude/skills/ingesta/SKILL.md` | Procesar y distribuir notas del inbox | líder + `inbox-classifier` |
+| `.claude/skills/status-refresh/SKILL.md` | Regenerar STATUS + registry | `status-syncer` |
+| `.claude/skills/digest/SKILL.md` | Resumen periódico | líder |
+| `.claude/skills/wiki-lint/SKILL.md` | Health check de contenido | líder/revisor |
+
+Comandos auto-invocables (las dos puertas gobernadas): **`/procesar`** (líder, procesa la cola) y
+**`/extender`** (arquitecto, cambia el sistema). Todo lo demás es manual o playbook.
 
 ---
 

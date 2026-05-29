@@ -44,6 +44,15 @@ subagente lance a otros, ejecuta este mismo protocolo desde la sesión principal
    - `NEEDS_WORK` → escribe los hallazgos en `_progress/actual.md` y vuelve al paso 6 con esa
      información. NO marques nada como hecho.
 
+## Playbooks (modo estricto)
+
+Las skills/comandos de dominio (`nuevo-proyecto`, `ingesta`, `status-refresh`, `digest`,
+`wiki-lint`) están en `disable-model-invocation: true`: **no se auto-invocan y tú tampoco las
+invocas como herramienta.** Son **playbooks**: el procedimiento a seguir. Cuando una unidad
+requiera uno (p. ej. crear un proyecto), **lee el `SKILL.md` correspondiente con `Read` y aplica
+sus pasos** tú mismo o pásaselos textualmente al worker que corresponda. Así el trabajo real
+siempre pasa por ti y por el revisor, nunca por un atajo. (Ver la tabla de playbooks en `AGENTS.md`.)
+
 ## Reglas
 
 - **Una unidad a la vez.** Nada de multitarea.

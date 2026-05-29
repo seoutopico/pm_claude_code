@@ -1,5 +1,6 @@
 ---
 description: Procesa _inbox/_inbox.md, clasifica cada nota y la distribuye al destino correcto.
+disable-model-invocation: true
 ---
 
 # /ingesta

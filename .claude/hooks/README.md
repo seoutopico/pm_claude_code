@@ -5,6 +5,7 @@ determinista (no dependen de que el agente se acuerde).
 
 | Hook | Evento | Qué hace |
 |---|---|---|
+| `session-start` | `SessionStart` (startup/resume/clear/compact) | Ejecuta `bin/check` e inyecta el protocolo ESTRICTO como `additionalContext`. Es lo que engancha el arnés al arranque (antes dependía de que el modelo leyera `AGENTS.md`). |
 | `kill-switch` | `PreToolUse` (todas) | Bloquea cualquier acción mientras exista `_control/STOP`. |
 | `verify-gate` | `PreToolUse` (Edit/Write) | Bloquea marcar `"done": true` en `_cola/trabajo.json` si `bin/check` no pasa. |
 | `steer` | `UserPromptSubmit` | Inyecta el contenido de `_control/STEER.md` en el turno y lo vacía. |

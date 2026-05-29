@@ -308,6 +308,39 @@ CLAUDE.md actual, que es oro para esto.
 
 ---
 
+## 11-bis. Errata y Fase 5 — enganche al runtime (modo estricto)
+
+> Añadido en 2026-05-29 tras detectar que el arnés **no se activaba** en uso real.
+
+**Supuesto equivocado del diseño original.** El §4 decía *"CLAUDE.md = puntero corto a AGENTS.md
+(Claude Code lo lee solo)"* y el §7 daba por hecho que `bin/check` *"se ejecuta al arrancar la
+sesión"*. Ambas cosas eran falsas en la práctica:
+
+1. **Claude Code carga `CLAUDE.md`, no `AGENTS.md`** (doc oficial: *code.claude.com/docs/en/memory*).
+   Un puntero en prosa no mete el protocolo en contexto.
+2. Aunque entrara, la memoria es **contexto, no configuración forzada**: *"to block an action
+   regardless of what Claude decides, use a hook"*. El arnés no tenía hook de arranque.
+3. Las **skills se auto-invocan** por matching de su `description`. Al pedir "crea proyectos", la
+   skill `nuevo-proyecto` se disparaba y hacía el trabajo **saltándose** cola, líder y revisor. El
+   `verify-gate` nunca veía un `done:true` que bloquear, porque no se usaba la cola.
+
+Resultado: el arnés quedaba como un carril paralelo que solo circulaba si lanzabas `/procesar` a
+mano. Se perdía la esencia (orquestación + Default-FAIL) justo en el camino feliz.
+
+**Fase 5 — el arnés se hace cumplir (estricto).** Tres enganches deterministas, los tres
+verificados por `bin/check` (sección 6) para que no regresen en silencio:
+
+| Enganche | Mecanismo | Cierra |
+|---|---|---|
+| Protocolo en contexto cada sesión | `@AGENTS.md` en `CLAUDE.md` **+** hook `SessionStart` que inyecta el protocolo y corre `bin/check` | el "Claude Code lo lee solo" |
+| Trabajo no cortocircuitable | `disable-model-invocation: true` en skills y comandos de dominio → pasan a **playbooks** que el líder lee | la auto-invocación de skills |
+| Cierre demostrado | `verify-gate` (ya existía) | el `done:true` sin evidencia |
+
+Decisión del operador (Aina, 2026-05-29): **modo estricto** — todo el trabajo pasa por el arnés;
+las skills no se auto-invocan. El único atajo es el operador tecleando `/nombre` a mano.
+
+---
+
 ## 12. Fuentes
 
 - Anthropic — *Effective harnesses for long-running agents* y repo `anthropics/cwc-long-running-agents`

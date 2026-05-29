@@ -1,6 +1,7 @@
 ---
 name: status-refresh
 description: Regenera STATUS.md y _memory/_registry.json escaneando todos los proyectos activos. Trigger con "actualiza STATUS", "refresca el dashboard", "/status-refresh".
+disable-model-invocation: true
 ---
 
 # Skill: Status refresh

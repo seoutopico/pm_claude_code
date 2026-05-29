@@ -1,5 +1,6 @@
 ---
 description: Regenera STATUS.md y _memory/_registry.json a partir de los READMEs de los proyectos.
+disable-model-invocation: true
 ---
 
 # /status-refresh

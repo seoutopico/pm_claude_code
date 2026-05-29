@@ -1,5 +1,6 @@
 ---
 description: Wizard inicial. Personaliza CLAUDE.md, registra al usuario y opcionalmente crea el primer proyecto.
+disable-model-invocation: true
 ---
 
 # /setup
@@ -20,7 +21,7 @@ Ejemplo de respuesta: "Aina, PM en editorial". Sin profundizar.
 
 > "¿Tienes un proyecto activo ahora mismo? Si sí, dime el nombre. Si no, di 'saltar' y dejamos solo el ejemplo `example-product-launch` que ya viene incluido."
 
-Si dice un nombre → lo crearás tras terminar las preguntas usando el skill `nuevo-proyecto`.
+Si dice un nombre → lo crearás tras terminar las preguntas siguiendo el playbook `.claude/skills/nuevo-proyecto/SKILL.md` (léelo y ejecuta sus pasos; en modo estricto no se auto-invoca).
 Si dice "saltar" → no creas nada, el usuario tiene el dummy como referencia.
 
 ### 3. Cadencia de digest
@@ -37,7 +38,7 @@ Default razonable: `semanal`.
    - `Cadencia de digest: <semanal/mensual/ninguno>`
    - Elimina la línea `> **TODO /setup**: ...` y el sufijo `_(pendiente de /setup)_`.
 
-2. **Crea el proyecto inicial** si el usuario lo pidió, llamando al skill `nuevo-proyecto`.
+2. **Crea el proyecto inicial** si el usuario lo pidió, siguiendo el playbook `.claude/skills/nuevo-proyecto/SKILL.md` (es bootstrap: la cola aún no existe, así que aquí lo creas directamente; a partir de entonces todo trabajo va por `/procesar`).
 
 3. **Añade entrada al log**:
    ```
