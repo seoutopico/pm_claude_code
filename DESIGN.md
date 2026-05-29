@@ -171,6 +171,16 @@ una tarea autocontenida, NO hereda el contexto del líder, y **escribe su result
 - **Puede automejorarse**: si detecta un patrón de fallo recurrente, puede proponer editar su
   propio `.md` o el `AGENTS.md` (pilar 3: el arnés se corrige a sí mismo).
 
+### 5.3b `arquitecto.md` — el agente que extiende el sistema  [nuevo]
+
+El arnés también se mantiene a sí mismo de forma gobernada. El `arquitecto` (Sonnet) es el único
+que toca la **meta** del sistema (tipos de proyecto, plantillas, skills, agentes, hooks, config).
+Conoce los invariantes (lee `AGENTS.md`/`CLAUDE.md`/`DESIGN.md`), imita las convenciones, y su
+contrato es doble: **toda regla nueva queda documentada Y validada** — si la regla es
+verificable, le añade su check a `bin/check`. Y, como todos, **valida con `bin/check` antes de
+cerrar**. Se invoca con `/extender`. Cierra el agujero de que hoy la meta se cambia a mano: a
+partir de ahora, extender el sistema es una operación con sus propias riendas.
+
 ### 5.4 Qué modelo usa cada agente (optimización de tokens)
 
 El modelo es el **cerebro intercambiable** del arnés. Cada agente declara el suyo en el

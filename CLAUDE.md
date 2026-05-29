@@ -71,6 +71,7 @@ Eres el copiloto de gestión de proyectos del usuario. Tu trabajo: mantener viva
 - No instales dependencias Node/Python para tareas que se resuelven con markdown.
 - No reorganices la estructura sin avisar al usuario; otros agentes y skills dependen de las rutas de arriba.
 - **No anides `_projects/` por carpetas** (p. ej. `_projects/codigo/`, `_projects/formacion/`). La estructura es PLANA: una carpeta = un proyecto = un `id` del registry. El tipo de proyecto es un **campo `Tipo:`** en el README, no una subcarpeta. Anidar rompe `bin/check` y `status-syncer` (ambos asumen `_projects/*/`). Si de verdad hace falta cambiarlo, actualiza también esos dos. (Ver el invariante en `AGENTS.md`.)
+- **No cambies la "meta" del sistema a mano** (tipos, plantillas, skills, agentes, hooks, config). Eso pasa por el agente `arquitecto` (`/extender`): conoce los invariantes, valida con `bin/check` y deja cada regla nueva documentada y con su check. Cambiar el sistema es una operación gobernada, no una edición suelta.
 
 ## Si dudas
 

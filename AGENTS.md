@@ -61,7 +61,7 @@ depender de tu memoria y pasa a ser un invariante que el sistema hace cumplir.
 | `_progress/history.md` | Changelog append-only de ejecuciones. | arnés |
 | `_control/STOP` | Si existe → parar (kill-switch). | arnés |
 | `_control/STEER.md` | Si tiene contenido → redirige sin reiniciar. | arnés |
-| `.claude/agents/` | Líder, revisor y los workers (subagentes V1). | arnés |
+| `.claude/agents/` | Líder, revisor, arquitecto y los workers (subagentes V1). | arnés |
 | `.claude/hooks/` | `verify-gate`, etc. | arnés |
 | `_inbox/_inbox.md` | Notas del usuario. **El arnés nunca escribe aquí.** | dominio |
 | `_projects/<id>/README.md` | Fuente de verdad de cada proyecto. | dominio |
@@ -97,6 +97,17 @@ Cambiar esto es legítimo (el arnés es tuyo), pero exige actualizar también `b
 
 ---
 
+## Cambiar el sistema mismo → el `arquitecto`
+
+¿Añadir un tipo de proyecto, una plantilla, un skill, un agente, un hook, o personalizar la
+config? **Eso no se hace a mano**: pasa por el agente `arquitecto` (comando `/extender`). Conoce
+los invariantes, imita las convenciones existentes, **documenta toda regla nueva Y le añade su
+check a `bin/check`**, y valida antes de cerrar. Así, extender el sistema nunca lo rompe — y cada
+regla nueva nace junto a quien la hace cumplir. (Gestionar proyectos/notas es el `lider`, no el
+arquitecto.)
+
+---
+
 ## Modelos (presupuesto del arnés)
 
 Cada agente declara su cerebro en el frontmatter de `.claude/agents/*.md`. Principio: cerebro
@@ -107,6 +118,7 @@ barato para trabajo mecánico, caro solo para juicio.
 | `lider` (orquestador) | Sonnet |
 | workers (`inbox-classifier`, `project-updater`, `status-syncer`, `wiki-maintainer`) | Haiku |
 | `revisor` (evaluador) | Sonnet |
+| `arquitecto` (mantenedor del sistema) | Sonnet |
 
 El **líder** es el rol que adopta la sesión principal al procesar la cola (lánzalo con
 `/procesar`): lee la cola, reparte a los workers y cierra. El **revisor** se lanza como
