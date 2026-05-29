@@ -20,11 +20,13 @@ es el cerebro intercambiable; este arnés se queda.
 
 2. Lee _progress/actual.md   → ¿quedó algo a medias en la última sesión?
 3. Lee _cola/trabajo.json    → coge UNA unidad con "done": false (una sola, no multitarea).
-4. Trabaja esa unidad (en Fase 2 lo hará el líder orquestando subagentes).
-5. Aplica el invariante de las TRES ESCRITURAS (ver abajo).
-6. Marca la unidad "done": true en _cola/trabajo.json.
+4. ORQUESTA: adopta el rol de líder (.claude/agents/lider.md) o lanza /procesar.
+     El líder reparte el trabajo a los workers (cada uno deja su resultado en _progress/<run-id>/).
+5. VERIFICA: lanza al revisor (.claude/agents/revisor.md). Devuelve PASS o NEEDS_WORK.
+6. Si PASS: aplica el invariante de las TRES ESCRITURAS y marca la unidad "done": true.
      → El hook verify-gate ejecutará el check; si no pasa, NO te dejará marcarlo.
-7. Deja constancia y, si procede, commit.
+     Si NEEDS_WORK: itera con los hallazgos. No marques nada hecho.
+7. Registra en _progress/history.md, limpia _progress/actual.md y, si procede, commit.
 ```
 
 ---
@@ -84,8 +86,9 @@ barato para trabajo mecánico, caro solo para juicio.
 | workers (`inbox-classifier`, `project-updater`, `status-syncer`, `wiki-maintainer`) | Haiku |
 | `revisor` (evaluador) | Sonnet |
 
-*(La orquestación líder/revisor llega en la Fase 2. En la Fase 1 el protocolo lo ejecuta la
-sesión principal directamente.)*
+El **líder** es el rol que adopta la sesión principal al procesar la cola (lánzalo con
+`/procesar`): lee la cola, reparte a los workers y cierra. El **revisor** se lanza como
+subagente con contexto limpio y sin permisos de escritura para verificar antes de cerrar.
 
 ---
 

@@ -1,0 +1,10 @@
+# Los scripts shell deben conservar saltos de línea LF aunque se clonen en Windows,
+# o bash fallará con errores tipo "$'\r': command not found".
+*.sh text eol=lf
+
+# PowerShell tolera ambos; lo dejamos a la convención del SO.
+*.ps1 text
+
+# Markdown y JSON: normalización de texto estándar.
+*.md text
+*.json text
