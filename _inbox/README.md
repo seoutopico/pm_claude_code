@@ -1,6 +1,6 @@
 # Inbox
 
-Esta carpeta es donde aterrizan tus notas sueltas antes de que Claude las distribuya.
+Esta carpeta es donde aterrizan tus notas sueltas —y cualquier adjunto— antes de que Claude las distribuya.
 
 ## Cómo se usa
 
@@ -19,6 +19,23 @@ Esta carpeta es donde aterrizan tus notas sueltas antes de que Claude las distri
    - Lo que no encaje con confianza → te pregunta antes de descartar.
 
 4. Al terminar, el inbox queda vacío y queda registro en `_memory/log.md`.
+
+## Adjuntos: imágenes, PDFs, transcripciones…
+
+El inbox **no es solo texto**. Aquí también puedes soltar:
+
+- Imágenes (capturas, fotos de una pizarra).
+- PDFs (un contrato, un brief, un acta).
+- Transcripciones de reuniones (texto largo, `.md` o `.txt`).
+- Cualquier fichero que quieras que se procese y se archive donde toque.
+
+Por eso el inbox es una **carpeta** y no un único fichero: déjalos junto a `_inbox.md` (por
+ejemplo `_inbox/2026-05-30_pizarra.png` o `_inbox/acta-kickoff.pdf`). Al lanzar `/ingesta`, el
+clasificador los tiene en cuenta igual que las notas y los distribuye al proyecto, reunión o
+decisión que corresponda (moviendo el fichero a su destino, p. ej. `_projects/<id>/docs/`).
+
+> Regla que se mantiene: el inbox es tuyo. El arnés **lee** lo que dejes aquí, pero nunca
+> escribe en `_inbox/` por su cuenta.
 
 ## Reglas
 
