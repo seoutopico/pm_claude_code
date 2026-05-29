@@ -28,6 +28,9 @@ if (Test-Path '_memory/_registry.json') {
       Where-Object { $_.Name -ne '_archive' } |
       ForEach-Object {
         if ($ids -contains $_.Name) { OK "proyecto '$($_.Name)' registrado" }
+        elseif (-not (Test-Path (Join-Path $_.FullName 'README.md'))) {
+          Fail "'$($_.Name)' no tiene README.md y no esta en el registry: parece una SUBCARPETA POR TIPO. _projects/ debe ser PLANO (una carpeta = un proyecto). El tipo va como campo 'Tipo:' en el README, no como carpeta. Anidar rompe check y status-syncer."
+        }
         else { Fail "proyecto '$($_.Name)' existe en _projects/ pero NO esta en _registry.json (huerfano)" }
       }
     foreach ($id in $ids) {

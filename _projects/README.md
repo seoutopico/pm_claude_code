@@ -29,5 +29,6 @@ Los proyectos cancelados o completados **no se borran**. Se mueven a `_projects/
 ## Reglas
 
 - **Un proyecto = una carpeta con ID slug-case**. Sin espacios, sin acentos, en minúsculas.
+- **`_projects/` es PLANO: no lo organices por subcarpetas de tipo.** Una carpeta directa = un proyecto = un `id`. El tipo (código, formación, ponencia, colaboración) es un **campo `Tipo:`** en el README, no una carpeta. Anidar por tipo rompe `bin/check` y `status-syncer`. (Invariante completo en `AGENTS.md`.)
 - **El ID es inmutable**. Cambiar el nombre de la carpeta es operación manual, requiere actualizar `_memory/` y `STATUS.md` a mano.
 - **El README es la fuente de verdad**. Si lo editas a mano, lanza `/status-refresh` para resincronizar el dashboard.

@@ -75,6 +75,28 @@ depender de tu memoria y pasa a ser un invariante que el sistema hace cumplir.
 
 ---
 
+## ⚠️ Invariante de estructura: `_projects/` es PLANO
+
+> Si vas a organizar proyectos por tipo (código, formación, ponencias, colaboraciones…), lee
+> esto ANTES de mover nada.
+
+`_projects/` tiene **un solo nivel**: cada subcarpeta directa es UN proyecto y su nombre es el
+`id` del `_memory/_registry.json` (única excepción: `_archive/`).
+
+- **NO crees subcarpetas por tipo** (`_projects/codigo/`, `_projects/formacion/`…) ni ningún
+  nivel intermedio.
+- El **tipo** de un proyecto es un **campo `Tipo:`** en su `README.md` (y en el registry), no una
+  carpeta. Materiales (PPTs, PDFs) van dentro del proyecto (`_projects/<id>/docs/`). El
+  calendario es un concepto aparte (`_memory/calendar.md`), no una jerarquía de carpetas.
+- **Por qué** (la consecuencia real): `bin/check` (chequeo de huérfanos) y `status-syncer`
+  (`Glob _projects/*/README.md`) asumen estructura plana. Anidar por carpetas **rompe el gate de
+  salud y el dashboard en silencio**.
+
+Cambiar esto es legítimo (el arnés es tuyo), pero exige actualizar también `bin/check`,
+`status-syncer` y el schema de `_registry.json`. Es una decisión deliberada, no un reorden casual.
+
+---
+
 ## Modelos (presupuesto del arnés)
 
 Cada agente declara su cerebro en el frontmatter de `.claude/agents/*.md`. Principio: cerebro

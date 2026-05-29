@@ -30,6 +30,8 @@ if [ -f _memory/_registry.json ]; then
     [ "$name" = "_archive" ] && continue
     if grep -q "\"id\": \"$name\"" _memory/_registry.json; then
       ok "proyecto '$name' registrado"
+    elif [ ! -f "${dir}README.md" ]; then
+      fail "'$name' no tiene README.md y no esta en el registry: parece una SUBCARPETA POR TIPO. _projects/ debe ser PLANO (una carpeta = un proyecto). El tipo va como campo 'Tipo:' en el README, no como carpeta. Anidar rompe check y status-syncer."
     else
       fail "proyecto '$name' existe en _projects/ pero NO esta en _registry.json (huerfano)"
     fi
