@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-29",
+  "cola": [
+    {
+      "id": "demo-001",
+      "tipo": "inbox",
+      "titulo": "Procesar la nota de ejemplo del inbox",
+      "descripcion": "Clasificar la nota pendiente en _inbox/_inbox.md y distribuirla a su destino (proyecto, persona o decision).",
+      "criterios_aceptacion": [
+        "La nota queda distribuida a su destino correcto",
+        "README del proyecto afectado actualizado (si aplica)",
+        "Entrada nueva en _memory/log.md",
+        "STATUS.md refrescado si cambia el estado activo"
+      ],
+      "done": false
+    }
+  ]
+}

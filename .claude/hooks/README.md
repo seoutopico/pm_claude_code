@@ -1,0 +1,28 @@
+# Hooks del arnés
+
+Estos hooks son la "fontanería" que hace cumplir el contrato del arnés de forma
+determinista (no dependen de que el agente se acuerde).
+
+| Hook | Evento | Qué hace |
+|---|---|---|
+| `verify-gate` | `PreToolUse` (Edit/Write) | Bloquea marcar `"done": true` en `_cola/trabajo.json` si `bin/check` no pasa. |
+
+## Portabilidad (importante)
+
+Cada hook tiene dos versiones: `.ps1` (Windows) y `.sh` (mac/linux). El registro en
+`.claude/settings.json` apunta a la versión **PowerShell** porque el repo se desarrolla en
+Windows.
+
+**Si clonas en mac/linux**, cambia en `.claude/settings.json` el comando del hook de:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/verify-gate.ps1
+```
+
+a:
+
+```
+bash .claude/hooks/verify-gate.sh
+```
+
+(y da permisos de ejecución: `chmod +x .claude/hooks/*.sh bin/*.sh`).

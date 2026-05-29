@@ -24,6 +24,10 @@ desktop.ini
 *.log
 output.md
 
+# Arnés v2: ficheros transitorios (no se versionan)
+_progress/.check-ok
+_control/STOP
+
 # Secretos típicos (por si acaso)
 .env
 .env.*

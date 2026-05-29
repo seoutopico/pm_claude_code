@@ -1,5 +1,10 @@
 # CLAUDE.md — Sistema de gestión de proyectos personal
 
+> **Rama `v2` (arnés):** este repo corre bajo un arnés. **Lee `AGENTS.md` ANTES de operar** —
+> define el protocolo de sesión, el gate de salud (`bin/check`) y el contrato Default-FAIL.
+> Este `CLAUDE.md` mantiene las **reglas de dominio** (proyectos, inbox, memoria); el `AGENTS.md`
+> añade la capa de arnés. Ambos están vigentes.
+
 Lee esto al inicio de cada sesión. Es la guía operativa del sistema.
 
 ## Quién soy y qué hago aquí

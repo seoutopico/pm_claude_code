@@ -11,9 +11,24 @@
       "Bash(cat:*)",
       "Bash(git status:*)",
       "Bash(git log:*)",
-      "Bash(git diff:*)"
+      "Bash(git diff:*)",
+      "Bash(bin/check.sh:*)",
+      "Bash(bash bin/check.sh:*)"
     ],
     "deny": []
   },
-  "model": "claude-sonnet-4-6"
+  "model": "claude-sonnet-4-6",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/verify-gate.ps1"
+          }
+        ]
+      }
+    ]
+  }
 }
