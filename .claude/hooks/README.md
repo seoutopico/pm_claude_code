@@ -5,7 +5,10 @@ determinista (no dependen de que el agente se acuerde).
 
 | Hook | Evento | Qué hace |
 |---|---|---|
+| `kill-switch` | `PreToolUse` (todas) | Bloquea cualquier acción mientras exista `_control/STOP`. |
 | `verify-gate` | `PreToolUse` (Edit/Write) | Bloquea marcar `"done": true` en `_cola/trabajo.json` si `bin/check` no pasa. |
+| `steer` | `UserPromptSubmit` | Inyecta el contenido de `_control/STEER.md` en el turno y lo vacía. |
+| `commit-on-stop` | `Stop` | Red de seguridad: auto-commitea al cerrar **solo** si existe `_control/AUTOCOMMIT`. |
 
 ## Portabilidad (importante)
 

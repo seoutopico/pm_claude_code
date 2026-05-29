@@ -27,6 +27,8 @@ output.md
 # Arnés v2: ficheros transitorios (no se versionan)
 _progress/.check-ok
 _control/STOP
+_control/AUTOCOMMIT
+_control/STEER.md
 
 # Secretos típicos (por si acaso)
 .env
