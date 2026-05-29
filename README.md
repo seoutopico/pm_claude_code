@@ -8,6 +8,19 @@ Inspirado en el patrón **LLM Wiki** de [Andrej Karpathy](https://gist.github.co
 
 ---
 
+## Rama `v2`: el arnés (harness)
+
+Estás en la rama **`v2`**. Es el mismo sistema de la `main` (V1) pero envuelto en un **arnés**:
+un protocolo de arranque que verifica salud (`bin/check`), una cola de trabajo explícita
+(`_cola/trabajo.json`), orquestación multiagente (líder + workers + revisor) y un contrato
+**Default-FAIL** que impide declarar algo "hecho" sin demostrarlo.
+
+- **Empieza por** [`AGENTS.md`](AGENTS.md) (el punto de entrada) y [`DESIGN.md`](DESIGN.md) (el plano).
+- **Guion de demo para clase**: [`docs/v2-arnes.md`](docs/v2-arnes.md).
+- **Compara V1 vs V2**: `git diff main v2` muestra exactamente lo que añade el arnés.
+
+---
+
 ## Qué es (y qué NO es)
 
 **Es** un repositorio que clonas y conviertes en tu sistema personal de gestión de proyectos. Carpetas, plantillas, skills y agentes que viven en tu máquina y controlas al 100%.
