@@ -82,7 +82,7 @@ Get-ChildItem '.claude/skills' -Directory -ErrorAction SilentlyContinue | ForEac
   $sk = Join-Path $_.FullName 'SKILL.md'
   if (Test-Path $sk) { $dominio += $sk }
 }
-foreach ($c in @('nuevo','ingesta','digest','status-refresh','lint','setup')) {
+foreach ($c in @('nuevo','ingesta','digest','status-refresh','lint','setup','agenda')) {
   $cf = ".claude/commands/$c.md"
   if (Test-Path $cf) { $dominio += $cf }
 }
@@ -92,6 +92,26 @@ foreach ($f in $dominio) {
 }
 if ($abiertos.Count -eq 0) { OK "skills/comandos de dominio blindados (no auto-invocables)" }
 else { Fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'): $($abiertos -join ', ')" }
+
+# 7) Conector de calendario (rama v3): integracion GOBERNADA y SOLO LECTURA. El calendario entra al
+#    sistema como TEXTO derivado (_memory/calendar.md), no como canal vivo. Invariante de seguridad:
+#    el unico worker que toca el conector NO tiene herramientas de escritura de calendario, asi el
+#    prompt-injection de un evento no puede convertirse en una accion sobre la agenda. Solo aplica si
+#    la integracion esta presente (no rompe ramas sin calendario).
+$agenda = '.claude/agents/agenda-syncer.md'
+if (Test-Path $agenda) {
+  OK "worker agenda-syncer presente"
+  $cont = Get-Content $agenda -Raw
+  $write = @('create_event','update_event','delete_event','respond_to_event') | Where-Object { $cont -match $_ }
+  if ($write.Count -eq 0) { OK "agenda-syncer es solo-lectura (sin tools de escritura de calendario)" }
+  else { Fail "agenda-syncer expone herramientas de ESCRITURA de calendario ($($write -join ', ')): rompe el invariante read-only. Escribir al calendario va tras un control explicito del operador, nunca en el worker de sincronizacion." }
+  if (Test-Path '_memory/calendar.md') { OK "existe _memory/calendar.md (espejo del calendario)" }
+  else { Fail "falta _memory/calendar.md: es la fuente derivada del calendario en texto plano" }
+  if (Test-Path '.mcp.json') {
+    try { Get-Content '.mcp.json' -Raw | ConvertFrom-Json | Out-Null; OK ".mcp.json es JSON valido" }
+    catch { Fail ".mcp.json no es JSON valido: $($_.Exception.Message)" }
+  }
+}
 
 Write-Host "==============================="
 if ($script:errores -eq 0) {

@@ -31,3 +31,10 @@
 - Causa: AGENTS.md no se autocarga, no había hook SessionStart, y las skills/comandos se auto-invocaban.
 - Arreglo (Fase 5, vía arquitecto): hook `SessionStart` (check + protocolo) + `@AGENTS.md` en CLAUDE.md + `disable-model-invocation: true` en las 5 skills y 6 comandos de dominio (pasan a playbooks). `bin/check` (.ps1/.sh) ampliado con la sección 6 que verifica los 3 enganches; probado que dispara ante violación y pasa al cumplirse.
 - Decisión del operador: modo ESTRICTO (todo pasa por el arnés). Ver DESIGN.md §11-bis y AGENTS.md "Modo ESTRICTO".
+
+## [2026-05-30] setup | integración Google Calendar (rama v3, solo lectura)
+- Objetivo: traer Google Calendar al sistema sin perder la filosofía (repo-as-system, texto plano, todo por el arnés).
+- Diseño: el calendario se trata como el inbox — se materializa a `_memory/calendar.md` (derivado), no se consulta en vivo. Sitio canónico ya previsto en AGENTS.md (invariante "_projects plano").
+- Piezas: `.mcp.json` (MCP remoto oficial de Google, pinneado), worker `agenda-syncer` (Haiku, SOLO lectura), playbook `agenda` (skill+comando `/agenda`, `disable-model-invocation`), `_memory/calendar.md` (semilla), `docs/calendar.md` (alta + seguridad).
+- Garantías deterministas (`bin/check` §7): el worker no tiene tools de escritura de calendario (invariante read-only) y el espejo existe. Prompt-injection de eventos contenido: entra como dato a un worker acotado, no como orden al líder.
+- Pendiente operador: dar de alta el conector (`/mcp`) con scopes readonly. Volcado hacia el calendario NO incluido (dirección inversa, gateada, futura vía /extender).

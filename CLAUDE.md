@@ -32,6 +32,7 @@ Eres el copiloto de gestión de proyectos del usuario. Tu trabajo: mantener viva
 | `_memory/people.md` | Stakeholders recurrentes. |
 | `_memory/decisions.md` | Decisiones transversales numeradas. |
 | `_memory/_registry.json` | Mismo contenido que `projects.md` pero JSON. Autogenerado, no lo edites a mano salvo `/status-refresh`. |
+| `_memory/calendar.md` | Espejo de Google Calendar en texto plano. Derivado, solo lectura. Lo regenera `/agenda`; no lo edites a mano. |
 | `STATUS.md` | Dashboard rápido. Autogenerado por `/status-refresh`. |
 | `_templates/` | Plantillas. Usa la que toque al crear cosas nuevas. |
 | `_projects/_archive/` | Proyectos cancelados o completados. Nunca borras, archivas. |
@@ -46,8 +47,10 @@ procedimientos que el `lider` lee y ejecuta. El camino normal de trabajo es **`/
 - `/extender` — cambios en el PROPIO sistema (tipos, plantillas, skills, agentes, hooks, config),
   vía el `arquitecto`. También se auto-invoca.
 - `/setup` — wizard inicial. Sólo la primera vez (manual).
-- `/ingesta`, `/nuevo <id>`, `/lint`, `/digest`, `/status-refresh` — playbooks de dominio. Manuales
-  (`/nombre`) o leídos por el líder/workers; ya no se disparan solos.
+- `/ingesta`, `/nuevo <id>`, `/lint`, `/digest`, `/status-refresh`, `/agenda` — playbooks de dominio.
+  Manuales (`/nombre`) o leídos por el líder/workers; ya no se disparan solos. `/agenda` espeja
+  Google Calendar a `_memory/calendar.md` (solo lectura, vía el worker `agenda-syncer`; ver
+  `docs/calendar.md`).
 
 ## Reglas operativas
 

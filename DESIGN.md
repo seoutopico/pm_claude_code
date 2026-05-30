@@ -341,6 +341,41 @@ las skills no se auto-invocan. El único atajo es el operador tecleando `/nombre
 
 ---
 
+## 11-ter. Fuentes externas vivas — Google Calendar (rama `v3`)
+
+> Añadido en 2026-05-30. Primera integración con un servicio externo (MCP). El reto: traer datos de
+> fuera **sin perder la filosofía** (repo-as-system, texto plano versionado, todo por el arnés).
+
+**El principio.** Una fuente externa viva (un calendario, un API) es lo opuesto a la filosofía:
+mutable, no versionada, no parseable, y un canal lateral que se salta cola/líder/revisor. La
+respuesta no es prohibirla, sino **tratarla como al inbox**: se **materializa a texto plano**
+(`_memory/calendar.md`) y se procesa por el arnés. El repo sigue siendo la fuente de verdad; el
+servicio externo es un *feed* que se espeja, nunca algo que el orquestador consulta en vivo.
+
+**Las dos garantías deterministas** (las hace cumplir `bin/check` §7, para que no regresen en silencio):
+
+| Garantía | Mecanismo | Cierra |
+|---|---|---|
+| Solo lectura | El único agente con el conector (`agenda-syncer`) no tiene tools de escritura de calendario; `bin/check` falla si se añaden | que el sistema toque tu agenda |
+| Dato, no instrucción | El contenido de eventos entra como texto a un worker acotado, no como orden al líder | el *prompt-injection* desde invitaciones externas |
+
+**Piezas.** `.mcp.json` (MCP remoto oficial de Google, pinneado en el repo → viaja con el clon),
+worker `agenda-syncer` (Haiku, read-only), playbook `agenda` (`/agenda`, `disable-model-invocation`),
+`_memory/calendar.md` (espejo derivado), `docs/calendar.md` (alta + seguridad). Sitio canónico ya
+previsto por el invariante "_projects plano" de `AGENTS.md` ("el calendario es un concepto aparte,
+`_memory/calendar.md`").
+
+**Dirección inversa (volcar al calendario) — deliberadamente fuera.** Crear/editar eventos desde el
+sistema requeriría tools de escritura y va detrás de un control explícito del operador (patrón
+`_control/`), añadida por el `arquitecto` vía `/extender` con su check. No está activada.
+
+**Patrón reutilizable.** Cualquier fuente externa futura (Gmail, Drive, un CRM) sigue el mismo
+molde: conector read-only → worker dedicado y acotado → materializar a texto en `_memory/` →
+procesar por el arnés → invariante en `bin/check`. La integración no erosiona la filosofía; la
+extiende.
+
+---
+
 ## 12. Fuentes
 
 - Anthropic — *Effective harnesses for long-running agents* y repo `anthropics/cwc-long-running-agents`

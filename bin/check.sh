@@ -101,7 +101,7 @@ for sk in .claude/skills/*/SKILL.md; do
   [ -f "$sk" ] || continue
   grep -q 'disable-model-invocation:[[:space:]]*true' "$sk" || abiertos="$abiertos $sk"
 done
-for c in nuevo ingesta digest status-refresh lint setup; do
+for c in nuevo ingesta digest status-refresh lint setup agenda; do
   cf=".claude/commands/$c.md"
   [ -f "$cf" ] || continue
   grep -q 'disable-model-invocation:[[:space:]]*true' "$cf" || abiertos="$abiertos $cf"
@@ -110,6 +110,27 @@ if [ -z "$abiertos" ]; then
   ok "skills/comandos de dominio blindados (no auto-invocables)"
 else
   fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'):$abiertos"
+fi
+
+# 7) Conector de calendario (rama v3): gobernado y SOLO LECTURA. El calendario entra como TEXTO
+#    derivado (_memory/calendar.md). Invariante: el worker que toca el conector no tiene tools de
+#    escritura de calendario. Solo aplica si la integracion esta presente.
+agenda=".claude/agents/agenda-syncer.md"
+if [ -f "$agenda" ]; then
+  ok "worker agenda-syncer presente"
+  writetools=""
+  for v in create_event update_event delete_event respond_to_event; do
+    grep -q "$v" "$agenda" && writetools="$writetools $v"
+  done
+  if [ -z "$writetools" ]; then
+    ok "agenda-syncer es solo-lectura (sin tools de escritura de calendario)"
+  else
+    fail "agenda-syncer expone herramientas de ESCRITURA de calendario ($writetools): rompe el invariante read-only"
+  fi
+  if [ -f _memory/calendar.md ]; then ok "existe _memory/calendar.md (espejo del calendario)"; else fail "falta _memory/calendar.md"; fi
+  if [ -f .mcp.json ]; then
+    if grep -q 'mcpServers' .mcp.json; then ok ".mcp.json presente"; else fail ".mcp.json sin clave mcpServers"; fi
+  fi
 fi
 
 echo "==============================="
