@@ -20,13 +20,23 @@ Windows.
 **Si clonas en mac/linux**, cambia en `.claude/settings.json` el comando del hook de:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/verify-gate.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.ps1"
 ```
 
 a:
 
 ```
-bash .claude/hooks/verify-gate.sh
+bash "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.sh"
 ```
 
 (y da permisos de ejecución: `chmod +x .claude/hooks/*.sh bin/*.sh`).
+
+## Ruta absoluta obligatoria (`$CLAUDE_PROJECT_DIR`)
+
+Los registros en `.claude/settings.json` usan `$CLAUDE_PROJECT_DIR` (ruta absoluta a la raíz del
+repo, que Claude Code inyecta a los hooks), **no** rutas relativas tipo `.claude/hooks/...`. Con
+ruta relativa, el hook se resuelve contra el *directorio de trabajo actual*: en cuanto un agente
+hace `cd` a una subcarpeta (p. ej. `_projects/<id>/`), PowerShell ya no encuentra el `.ps1` y el
+hook **falla sin ejecutarse** — apagando en silencio el `kill-switch` y, lo más grave, el
+`verify-gate` (el contrato Default-FAIL deja de blindar el cierre). `bin/check` (§6d) falla si
+vuelve a colarse una ruta relativa.

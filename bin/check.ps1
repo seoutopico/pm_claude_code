@@ -93,6 +93,16 @@ foreach ($f in $dominio) {
 if ($abiertos.Count -eq 0) { OK "skills/comandos de dominio blindados (no auto-invocables)" }
 else { Fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'): $($abiertos -join ', ')" }
 
+# 6d) Hooks registrados con ruta ABSOLUTA ($CLAUDE_PROJECT_DIR), no relativa. Con '-File .claude/...'
+#     el hook falla en cuanto el cwd no es la raiz del repo (p. ej. tras un 'cd' a un proyecto):
+#     PowerShell no encuentra el .ps1 y el hook NO se ejecuta. Eso apaga en silencio el kill-switch
+#     y, sobre todo, el verify-gate (Default-FAIL deja de blindar el cierre). Invariante: nunca
+#     vuelva una ruta relativa en los registros de hooks.
+$settingsRaw = Get-Content '.claude/settings.json' -Raw
+$relHooks = [regex]::Matches($settingsRaw, '-File\s+\.claude[\\/]+hooks')
+if ($relHooks.Count -eq 0) { OK "hooks con ruta absoluta (`$CLAUDE_PROJECT_DIR): resisten cambios de cwd" }
+else { Fail "$($relHooks.Count) hook(s) con ruta RELATIVA ('-File .claude/hooks/...'): fallan si el cwd no es la raiz del repo y dejan de ejecutarse (incluido verify-gate/Default-FAIL). Usa '-File `"`$CLAUDE_PROJECT_DIR/.claude/hooks/<x>.ps1`"'." }
+
 Write-Host "==============================="
 if ($script:errores -eq 0) {
   New-Item -ItemType Directory -Force _progress | Out-Null

@@ -111,6 +111,14 @@ if [ -z "$abiertos" ]; then
 else
   fail "se auto-invocarian y cortocircuitarian el arnes (falta 'disable-model-invocation: true'):$abiertos"
 fi
+# 6d) Hooks con ruta ABSOLUTA ($CLAUDE_PROJECT_DIR), no relativa. Con '-File .claude/...' el hook
+#     falla si el cwd no es la raiz (tras un 'cd') y NO se ejecuta: apaga kill-switch y verify-gate
+#     (Default-FAIL) en silencio. Invariante: ninguna ruta relativa en los registros de hooks.
+if grep -Eq '\-File[[:space:]]+\.claude[\\/]+hooks' .claude/settings.json 2>/dev/null; then
+  fail "hook(s) con ruta RELATIVA ('-File .claude/hooks/...'): fallan si el cwd no es la raiz del repo y dejan de ejecutarse (incluido verify-gate/Default-FAIL). Usa '-File \"\$CLAUDE_PROJECT_DIR/.claude/hooks/<x>.ps1\"'."
+else
+  ok "hooks con ruta absoluta (\$CLAUDE_PROJECT_DIR): resisten cambios de cwd"
+fi
 
 echo "==============================="
 if [ "$errores" -eq 0 ]; then
