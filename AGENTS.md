@@ -171,7 +171,12 @@ subagente con contexto limpio y sin permisos de escritura para verificar antes d
 
 ## Controles del operador (tú)
 
-- **Parar en seco**: crea el fichero `_control/STOP`.
-- **Redirigir sin reiniciar**: escribe en `_control/STEER.md`.
+- **Parar en seco**: crea el fichero `_control/STOP`. El hook `kill-switch` (PreToolUse) bloquea
+  cualquier acción mientras exista. Bórralo para reanudar.
+- **Redirigir sin reiniciar**: escribe en `_control/STEER.md`. El hook `steer` (UserPromptSubmit)
+  inyecta su contenido en el turno y lo vacía.
+- **Auto-commit al cerrar** (opcional): crea `_control/AUTOCOMMIT` y el hook `commit-on-stop` (Stop)
+  commitea al terminar la sesión.
 
-*(El cableado completo de estos controles llega en la Fase 3.)*
+*(Ya cableados: ver `.claude/hooks/` y su registro en `.claude/settings.json`. Los hooks usan ruta
+absoluta `$CLAUDE_PROJECT_DIR` para resolver da igual el cwd; `bin/check` §6a/§6d lo verifica.)*
