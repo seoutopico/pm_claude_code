@@ -8,6 +8,7 @@ Este archivo sigue el estándar [llms.txt](https://llmstxt.org/). Sirve como ín
 
 - [CLAUDE.md](CLAUDE.md): instrucciones operativas que Claude lee al inicio de cada sesión. Define rutas, comandos, reglas.
 - [STATUS.md](STATUS.md): dashboard rápido. Estado de los proyectos activos. Autogenerado.
+- [MI-SEMANA.md](MI-SEMANA.md): briefing prospectivo "qué hacer esta semana". Cruza proyectos y calendario. Autogenerado con `/mi-semana`.
 - [README.md](README.md): qué es el sistema, instalación, día a día.
 
 ## Memoria (patrón Karpathy)
@@ -36,13 +37,14 @@ Este archivo sigue el estándar [llms.txt](https://llmstxt.org/). Sirve como ín
 - [_templates/decision.md](_templates/decision.md): decisión registrada (ADR-style).
 - [_templates/status-line.md](_templates/status-line.md): línea para STATUS.md.
 - [_templates/digest.md](_templates/digest.md): resumen periódico.
+- [_templates/semana.md](_templates/semana.md): briefing prospectivo de la semana (estructura de MI-SEMANA.md).
 
 ## Configuración Claude Code
 
 - [.claude/settings.json](.claude/settings.json): permisos y configuración.
-- [.claude/skills/](.claude/skills/): skills prefabricados (ingesta, nuevo-proyecto, status-refresh, wiki-lint, digest).
-- [.claude/agents/](.claude/agents/): sub-agentes (inbox-classifier, project-updater, wiki-maintainer, status-syncer).
-- [.claude/commands/](.claude/commands/): slash commands (setup, ingesta, nuevo, lint).
+- [.claude/skills/](.claude/skills/): skills prefabricados (ingesta, nuevo-proyecto, status-refresh, wiki-lint, digest, agenda, mi-semana).
+- [.claude/agents/](.claude/agents/): sub-agentes (inbox-classifier, project-updater, wiki-maintainer, status-syncer, agenda-syncer, semana-planner).
+- [.claude/commands/](.claude/commands/): slash commands (setup, ingesta, nuevo, lint, digest, status-refresh, agenda, mi-semana, procesar, extender).
 
 ## Documentación
 

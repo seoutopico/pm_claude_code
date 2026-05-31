@@ -82,7 +82,7 @@ Get-ChildItem '.claude/skills' -Directory -ErrorAction SilentlyContinue | ForEac
   $sk = Join-Path $_.FullName 'SKILL.md'
   if (Test-Path $sk) { $dominio += $sk }
 }
-foreach ($c in @('nuevo','ingesta','digest','status-refresh','lint','setup','agenda')) {
+foreach ($c in @('nuevo','ingesta','digest','status-refresh','lint','setup','agenda','mi-semana')) {
   $cf = ".claude/commands/$c.md"
   if (Test-Path $cf) { $dominio += $cf }
 }
@@ -121,6 +121,23 @@ if (Test-Path $agenda) {
     try { Get-Content '.mcp.json' -Raw | ConvertFrom-Json | Out-Null; OK ".mcp.json es JSON valido" }
     catch { Fail ".mcp.json no es JSON valido: $($_.Exception.Message)" }
   }
+}
+
+# 8) Feature /mi-semana (briefing prospectivo): la SINTESIS trabaja sobre TEXTO ya en el repo, no
+#    sobre el feed vivo. Invariante: el worker semana-planner NO toca el conector de calendario (no
+#    tiene tools MCP); acceder al calendario vivo es exclusivo de agenda-syncer (§7). Asi, leer el
+#    plan de la semana nunca puede convertirse en una accion sobre tu agenda. Solo aplica si la
+#    feature esta presente (no rompe ramas sin ella).
+$semana = '.claude/agents/semana-planner.md'
+if (Test-Path $semana) {
+  OK "worker semana-planner presente"
+  $toolsLine = ((Get-Content $semana) | Where-Object { $_ -match '^tools:' }) -join ' '
+  if ($toolsLine -match 'mcp') { Fail "semana-planner expone tools MCP ('$toolsLine'): debe SINTETIZAR sobre el texto de _memory/calendar.md, no tocar el conector vivo. El feed de calendario es exclusivo de agenda-syncer (§7)." }
+  else { OK "semana-planner no toca el conector (sintetiza sobre texto, sin tools MCP)" }
+  if (Test-Path '_templates/semana.md') { OK "existe _templates/semana.md (plantilla de /mi-semana)" }
+  else { Fail "falta _templates/semana.md: la plantilla manda al reconstruir MI-SEMANA.md" }
+  if (Test-Path 'MI-SEMANA.md') { OK "existe MI-SEMANA.md (briefing derivado de la semana)" }
+  else { Fail "falta MI-SEMANA.md: es la salida derivada de /mi-semana (semilla regenerable)" }
 }
 
 Write-Host "==============================="

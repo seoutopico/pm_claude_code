@@ -38,3 +38,11 @@
 - Piezas: `.mcp.json` (MCP remoto oficial de Google, pinneado), worker `agenda-syncer` (Haiku, SOLO lectura), playbook `agenda` (skill+comando `/agenda`, `disable-model-invocation`), `_memory/calendar.md` (semilla), `docs/calendar.md` (alta + seguridad).
 - Garantías deterministas (`bin/check` §7): el worker no tiene tools de escritura de calendario (invariante read-only) y el espejo existe. Prompt-injection de eventos contenido: entra como dato a un worker acotado, no como orden al líder.
 - Pendiente operador: dar de alta el conector (`/mcp`) con scopes readonly. Volcado hacia el calendario NO incluido (dirección inversa, gateada, futura vía /extender).
+
+## [2026-05-31] setup | feature /mi-semana (briefing prospectivo de la semana, vía arquitecto)
+- Objetivo: responder "qué tengo que HACER esta semana" cruzando hitos/bloqueos de proyectos con los eventos del calendario. Complementa `/digest` (mira atrás) y `/status-refresh` (foto del ahora).
+- Diseño: la síntesis trabaja sobre TEXTO ya en el repo (`_registry.json` + READMEs + `_memory/calendar.md`), nunca sobre el feed vivo. Salida en `MI-SEMANA.md` (raíz, derivado como STATUS.md, sin rastro en log).
+- Piezas: worker `semana-planner` (Haiku, solo lectura, SIN tools MCP), plantilla `_templates/semana.md`, playbook `mi-semana` (skill + comando `/mi-semana`, ambos `disable-model-invocation`), semilla `MI-SEMANA.md`.
+- Relación con `/agenda`: separación de responsabilidades — `/agenda` materializa el calendario (toca el feed); `/mi-semana` solo consume el espejo y degrada con gracia a solo-proyectos si no existe. Así solo `agenda-syncer` toca el conector.
+- Garantía determinista (`bin/check` §8, .ps1/.sh): `semana-planner` no expone tools MCP (la línea `tools:` no contiene `mcp`); plantilla y salida presentes. `mi-semana` añadido a la lista §6c (blindado, no auto-invocable). Probado que el §8 dispara ante violación (worker con `mcp__calendar__list_events`) y pasa al cumplirse, en ambas versiones.
+- Docs actualizados: AGENTS.md (playbooks, modelos, mapa), CLAUDE.md (rutas, comandos), llms.txt.

@@ -84,6 +84,7 @@ en unidad(es) de la cola y procésalo como **líder** (orquesta workers → revi
 | `.claude/skills/digest/SKILL.md` | Resumen periódico | líder |
 | `.claude/skills/wiki-lint/SKILL.md` | Health check de contenido | líder/revisor |
 | `.claude/skills/agenda/SKILL.md` | Espejar Google Calendar a `_memory/calendar.md` (solo lectura) | líder + `agenda-syncer` |
+| `.claude/skills/mi-semana/SKILL.md` | Briefing prospectivo "qué hacer esta semana" → `MI-SEMANA.md` (proyectos × calendar.md, solo lectura) | líder + `semana-planner` |
 
 Comandos auto-invocables (las dos puertas gobernadas): **`/procesar`** (líder, procesa la cola) y
 **`/extender`** (arquitecto, cambia el sistema). Todo lo demás es manual o playbook.
@@ -108,6 +109,7 @@ Comandos auto-invocables (las dos puertas gobernadas): **`/procesar`** (líder, 
 | `_projects/<id>/README.md` | Fuente de verdad de cada proyecto. | dominio |
 | `_memory/_registry.json` | Tabla de proyectos en JSON. Contexto rápido. | dominio |
 | `_memory/calendar.md` | Espejo del calendario (derivado, solo lectura). Lo regenera `/agenda`. | dominio |
+| `MI-SEMANA.md` | Briefing prospectivo de la semana (derivado, solo lectura). Lo regenera `/mi-semana`. | dominio |
 | `.mcp.json` | Conectores MCP (Google Calendar, solo lectura). | arnés |
 | `_memory/log.md` | Changelog del sistema. Append-only. | dominio |
 | `_templates/` | Plantillas. Mandan al crear cosas nuevas. | dominio |
@@ -159,7 +161,7 @@ barato para trabajo mecánico, caro solo para juicio.
 | Agente | Modelo |
 |---|---|
 | `lider` (orquestador) | Sonnet |
-| workers (`inbox-classifier`, `project-updater`, `status-syncer`, `wiki-maintainer`, `agenda-syncer`) | Haiku |
+| workers (`inbox-classifier`, `project-updater`, `status-syncer`, `wiki-maintainer`, `agenda-syncer`, `semana-planner`) | Haiku |
 | `revisor` (evaluador) | Sonnet |
 | `arquitecto` (mantenedor del sistema) | Sonnet |
 

@@ -101,7 +101,7 @@ for sk in .claude/skills/*/SKILL.md; do
   [ -f "$sk" ] || continue
   grep -q 'disable-model-invocation:[[:space:]]*true' "$sk" || abiertos="$abiertos $sk"
 done
-for c in nuevo ingesta digest status-refresh lint setup agenda; do
+for c in nuevo ingesta digest status-refresh lint setup agenda mi-semana; do
   cf=".claude/commands/$c.md"
   [ -f "$cf" ] || continue
   grep -q 'disable-model-invocation:[[:space:]]*true' "$cf" || abiertos="$abiertos $cf"
@@ -139,6 +139,23 @@ if [ -f "$agenda" ]; then
   if [ -f .mcp.json ]; then
     if grep -q 'mcpServers' .mcp.json; then ok ".mcp.json presente"; else fail ".mcp.json sin clave mcpServers"; fi
   fi
+fi
+
+# 8) Feature /mi-semana (briefing prospectivo): la SINTESIS trabaja sobre TEXTO ya en el repo, no
+#    sobre el feed vivo. Invariante: el worker semana-planner NO toca el conector de calendario (no
+#    tiene tools MCP); acceder al calendario vivo es exclusivo de agenda-syncer (§7). Solo aplica si
+#    la feature esta presente.
+semana=".claude/agents/semana-planner.md"
+if [ -f "$semana" ]; then
+  ok "worker semana-planner presente"
+  toolsline="$(grep -E '^tools:' "$semana" || true)"
+  if echo "$toolsline" | grep -q 'mcp'; then
+    fail "semana-planner expone tools MCP: debe SINTETIZAR sobre el texto de _memory/calendar.md, no tocar el conector vivo. El feed de calendario es exclusivo de agenda-syncer (§7)."
+  else
+    ok "semana-planner no toca el conector (sintetiza sobre texto, sin tools MCP)"
+  fi
+  if [ -f _templates/semana.md ]; then ok "existe _templates/semana.md (plantilla de /mi-semana)"; else fail "falta _templates/semana.md: la plantilla manda al reconstruir MI-SEMANA.md"; fi
+  if [ -f MI-SEMANA.md ]; then ok "existe MI-SEMANA.md (briefing derivado de la semana)"; else fail "falta MI-SEMANA.md: es la salida derivada de /mi-semana (semilla regenerable)"; fi
 fi
 
 echo "==============================="
